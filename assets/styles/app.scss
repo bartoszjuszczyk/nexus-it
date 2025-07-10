@@ -23,16 +23,6 @@ body {
     min-height: 100vh;
 }
 
-.app-sidebar {
-    width: 240px;
-    background-color: darken($surface-color, 3%);
-    border-right: 1px solid $border-color;
-    padding: $spacing-unit;
-    @media (max-width: $breakpoint-md) {
-        display: none;
-    }
-}
-
 .app-main-content {
     flex-grow: 1;
     padding: $spacing-unit * 1.5;
@@ -51,7 +41,7 @@ body {
 // === Typografia ===
 h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
-    margin-bottom: $spacing-unit / 2;
+    margin-bottom: calc($spacing-unit / 2);
     font-weight: $font-weight-bold;
 }
 
@@ -81,7 +71,7 @@ a {
     cursor: pointer;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: ($spacing-unit / 2) ($spacing-unit);
+    padding: calc($spacing-unit / 2) ($spacing-unit);
     font-size: $font-size-base;
     line-height: $line-height-base;
     border-radius: $border-radius;
@@ -119,14 +109,14 @@ a {
 
 .form-label {
     display: inline-block;
-    margin-bottom: $spacing-unit / 4;
+    margin-bottom: calc($spacing-unit / 4);
     font-weight: $font-weight-bold;
 }
 
 .form-control {
     display: block;
     width: 100%;
-    padding: ($spacing-unit / 2) ($spacing-unit);
+    padding: calc($spacing-unit / 2) ($spacing-unit);
     font-size: $font-size-base;
     font-weight: $font-weight-normal;
     line-height: $line-height-base;
@@ -232,3 +222,5 @@ textarea.form-control {
         text-align: left;
     }
 }
+
+@import 'components';
