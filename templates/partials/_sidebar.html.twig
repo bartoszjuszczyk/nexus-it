@@ -1,0 +1,40 @@
+<aside class="app-sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="sidebar-brand">BRJ Bridge</a>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li>
+                {# Tutaj będziesz musiał dodać logikę do dynamicznego ustawiania klasy 'active' #}
+                <a href="#">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span>My tickets</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-plus-circle"></i>
+                    <span>New ticket</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa-solid fa-book"></i>
+                    <span>Knowledge base</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_user_edit') }}">
+                    <i class="fa-solid fa-user"></i>
+                    <span>My profile</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="{{ path('app_logout') }}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>
