@@ -1,0 +1,234 @@
+@import 'variables';
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: $font-family-sans-serif;
+    font-size: $font-size-base;
+    font-weight: $font-weight-normal;
+    line-height: $line-height-base;
+    color: $text-color;
+    background-color: $background-light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: 240px;
+    background-color: darken($surface-color, 3%);
+    border-right: 1px solid $border-color;
+    padding: $spacing-unit;
+    @media (max-width: $breakpoint-md) {
+        display: none;
+    }
+}
+
+.app-main-content {
+    flex-grow: 1;
+    padding: $spacing-unit * 1.5;
+    @media (min-width: $breakpoint-md) {
+        padding: $spacing-unit * 2;
+    }
+}
+
+.container {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+    max-width: $breakpoint-lg;
+}
+
+// === Typografia ===
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: $spacing-unit / 2;
+    font-weight: $font-weight-bold;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: $spacing-unit;
+}
+
+a {
+    color: $primary-color;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+// === Podstawowe Komponenty ===
+
+// Przyciski
+.btn {
+    display: inline-block;
+    font-weight: $font-weight-normal;
+    color: $surface-color;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: ($spacing-unit / 2) ($spacing-unit);
+    font-size: $font-size-base;
+    line-height: $line-height-base;
+    border-radius: $border-radius;
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.btn-primary {
+        background-color: $primary-color;
+        border-color: $primary-color;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
+            border-color: darken($primary-color, 10%);
+        }
+    }
+
+    &.btn-secondary {
+        background-color: $secondary-color;
+        border-color: $secondary-color;
+
+        &:hover {
+            background-color: darken($secondary-color, 10%);
+            border-color: darken($secondary-color, 10%);
+        }
+    }
+}
+
+// Formularze
+.form-group {
+    margin-bottom: $spacing-unit;
+}
+
+.form-label {
+    display: inline-block;
+    margin-bottom: $spacing-unit / 4;
+    font-weight: $font-weight-bold;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: ($spacing-unit / 2) ($spacing-unit);
+    font-size: $font-size-base;
+    font-weight: $font-weight-normal;
+    line-height: $line-height-base;
+    color: $text-color;
+    background-color: $surface-color;
+    background-clip: padding-box;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    &:focus {
+        outline: 0;
+        border-color: lighten($primary-color, 25%);
+        box-shadow: 0 0 0 0.25rem rgba($primary-color, 0.25);
+    }
+}
+
+textarea.form-control {
+    min-height: 120px;
+}
+
+// Karta Zgłoszenia
+.ticket-card {
+    background-color: $surface-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: $spacing-unit * 1.5;
+    margin-bottom: $spacing-unit;
+    box-shadow: $box-shadow;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .ticket-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-unit;
+        border-bottom: 1px solid $border-color;
+        padding-bottom: $spacing-unit;
+    }
+
+    .ticket-title {
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    .ticket-meta {
+        font-size: 0.875rem;
+        color: $text-muted;
+    }
+}
+
+// Etykiety statusów
+.status-badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: $border-radius * 2;
+
+    &.status-new {
+        background-color: $status-new;
+    }
+
+    &.status-in-progress {
+        background-color: $status-in-progress;
+        color: #000;
+    }
+
+    &.status-resolved {
+        background-color: $status-resolved;
+    }
+
+    &.status-closed {
+        background-color: $status-closed;
+    }
+}
+
+// Tabele
+.table {
+    width: 100%;
+    margin-bottom: $spacing-unit;
+    background-color: $surface-color;
+    border-collapse: collapse;
+
+    th, td {
+        padding: $spacing-unit * 0.75;
+        vertical-align: top;
+        border-top: 1px solid $border-color;
+    }
+
+    thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid $border-color;
+        text-align: left;
+    }
+}

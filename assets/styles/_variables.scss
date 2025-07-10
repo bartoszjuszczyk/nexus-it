@@ -1,0 +1,35 @@
+// === Kolory ===
+// Paleta inspirowana profesjonalizmem i przejrzystością
+$primary-color: #007bff; // Główny kolor marki (np. linki, przyciski akcji)
+$secondary-color: #6c757d; // Kolor pomocniczy (np. drugorzędne przyciski)
+$background-light: #f8f9fa; // Tło dla całej strony
+$surface-color: #ffffff; // Tło dla elementów "na wierzchu" (karty, panele)
+$text-color: #212529; // Główny kolor tekstu
+$text-muted: #6c757d; // Wyciszony tekst (np. daty, dodatkowe informacje)
+$border-color: #dee2e6; // Kolor obramowań
+
+// Kolory statusów zgłoszeń
+$status-new: #6c757d; // Szary dla "Nowe"
+$status-in-progress: #ffc107; // Żółty/Bursztynowy dla "W trakcie"
+$status-resolved: #28a745; // Zielony dla "Rozwiązane"
+$status-closed: #dc3545; // Czerwony dla "Zamknięte"
+
+$font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+$font-size-base: 1rem;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+
+$line-height-base: 1.5;
+
+$spacing-unit: 1rem;
+
+$border-radius: 0.375rem;
+$box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
+
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
