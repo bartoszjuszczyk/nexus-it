@@ -35,7 +35,7 @@ class Ticket
     /**
      * @var Collection<int, TicketAttachment>
      */
-    #[ORM\OneToMany(targetEntity: TicketAttachment::class, mappedBy: 'ticket')]
+    #[ORM\OneToMany(targetEntity: TicketAttachment::class, mappedBy: 'ticket', cascade: ['persist'])]
     private Collection $ticketAttachments;
 
     public function __construct()

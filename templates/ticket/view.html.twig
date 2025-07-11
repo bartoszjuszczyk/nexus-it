@@ -110,22 +110,22 @@
                 </div>
             </div>
 
-            {#            {% if ticket.attachments|length > 0 %} #}
-            <div class="card">
-                <div class="card-header"><h4>Attachments</h4></div>
-                <div class="card-body">
-                    <ul class="attachments-list">
-                        {#                            {% for attachment in ticket.attachments %} #}
-                        {#                                <li> #}
-                        {#                                    <a href="{{ path('app_attachment_download', {id: attachment.id}) }}"> #}
-                        {#                                        <i class="fa-solid fa-file-arrow-down"></i> {{ attachment.originalFilename }} #}
-                        {#                                    </a> #}
-                        {#                                </li> #}
-                        {#                            {% endfor %} #}
-                    </ul>
+            {% if ticket.ticketAttachments|length > 0 %}
+                <div class="card">
+                    <div class="card-header"><h4>Attachments</h4></div>
+                    <div class="card-body">
+                        <ul class="attachments-list">
+                            {% for attachment in ticket.ticketAttachments %}
+                                <li>
+                                    <a href="{{ path('app_attachment_download', {id: attachment.id}) }}">
+                                        <i class="fa-solid fa-file-arrow-down"></i> {{ attachment.file }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            {#            {% endif %} #}
+            {% endif %}
 
             {# Sekcja widoczna tylko dla pracowników IT #}
             {% if is_granted('ROLE_SUPPORT') %}

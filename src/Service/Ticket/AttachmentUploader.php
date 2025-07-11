@@ -1,19 +1,19 @@
 <?php
 
 /**
- * File: AvatarUploader.php.
+ * File: AttachmentUploader.php.
  *
  * @author Bartosz Juszczyk <b.juszczyk@bjuszczyk.pl>
  */
 
-namespace App\Service\User;
+namespace App\Service\Ticket;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-class AvatarUploader
+class AttachmentUploader
 {
     public function __construct(
         private string $targetDirectory,
@@ -24,7 +24,8 @@ class AvatarUploader
 
     public function upload(UploadedFile $file): string
     {
-        $safeFilename = $this->slugger->slug(uniqid());
+        $fileOriginalName = $file->getClientOriginalName();
+        $safeFilename = $this->slugger->slug($fileOriginalName);
         $fileName = $safeFilename.'.'.$file->guessExtension();
 
         try {

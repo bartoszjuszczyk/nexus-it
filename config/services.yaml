@@ -4,6 +4,7 @@ imports:
 parameters:
     app_title: "%env(APP_TITLE)%"
     avatar_directory: '%kernel.project_dir%/public/uploads/user/avatar'
+    attachment_directory: '%kernel.project_dir%/var/uploads/attachments'
 
 services:
     _defaults:
@@ -16,4 +17,8 @@ services:
     App\Service\User\AvatarUploader:
         arguments:
             $targetDirectory: '%avatar_directory%'
+
+    App\Service\Ticket\AttachmentUploader:
+        arguments:
+            $targetDirectory: '%attachment_directory%'
 

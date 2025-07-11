@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Ticket;
+use App\Entity\TicketAttachment;
 use App\Form\Type\TicketType;
+use App\Service\Ticket\AttachmentUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +28,25 @@ final class TicketController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
+        AttachmentUploader $attachmentUploader,
     ): Response {
+        $user = $this->getUser();
         $ticket = new Ticket();
         $form = $this->createForm(TicketType::class, $ticket);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $ticket->setAuthor($this->getUser());
+                $attachments = $form->get('attachments')->getData();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $fileName = $attachmentUploader->upload($attachment);
+                        $attachmentEntity = new TicketAttachment();
+                        $attachmentEntity->setAuthor($user);
+                        $attachmentEntity->setFile($fileName);
+                        $ticket->addTicketAttachment($attachmentEntity);
+                    }
+                }
+                $ticket->setAuthor($user);
                 $entityManager->persist($ticket);
                 $entityManager->flush();
 
