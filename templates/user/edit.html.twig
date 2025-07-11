@@ -4,58 +4,33 @@
 
 {% block content %}
     <div class="card">
-        <form class="profile-form" action="#" method="POST" enctype="multipart/form-data">
-            <div class="profile-grid">
-                <div class="profile-avatar-column">
-                    <h3 class="column-title">Profile photo</h3>
-                    <div class="avatar-uploader">
-                        <div class="current-avatar">
-                            <img src="https://i.pravatar.cc/150?u=jankowalski" alt="Current avatar">
-                        </div>
-                        <input type="file" id="avatar-upload" name="avatar" accept="image/png, image/jpeg">
-                        <label for="avatar-upload" class="btn btn-secondary">Change photo</label>
-                        <p class="form-text">JPG, PNG or GIF. Max size: 2MB.</p>
-                    </div>
-                </div>
+        {# Rozpocznij formularz - atrybuty zostaną dodane automatycznie #}
+        {{ form_start(form) }}
 
-                <div class="profile-form-column">
-                    <h3 class="column-title">Personal data</h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstname">Firstname</label>
-                            <input type="text" id="firstname" name="firstname" class="form-control" value="{{ app.user.firstname }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastname">Lastname</label>
-                            <input type="text" id="lastname" name="lastname" class="form-control" value="{{ app.user.lastname }}">
-                        </div>
-                    </div>
-
-                    <h3 class="column-title">Locales</h3>
-                    <div class="form-group">
-                        <label for="locale">Language</label>
-                        <select id="locale" name="locale" class="form-control">
-                            <option value="pl_PL" selected>Polski (pl_PL)</option>
-                            <option value="en_US">English (en_US)</option>
-                            <option value="de_DE">Deutsch (de_DE)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="timezone">Timezone</label>
-                        <select id="timezone" name="timezone" class="form-control">
-                            <option value="Europe/Warsaw" selected>Europa/Warszawa</option>
-                            <option value="Europe/London">Europa/Londyn</option>
-                            <option value="Europe/Paris">Europa/Paryż</option>
-                            <option value="America/New_York">Ameryka/Nowy Jork</option>
-                        </select>
-                    </div>
-                </div>
+        <div class="profile-grid">
+            <div class="profile-avatar-column">
+                <h3 class="column-title">Zdjęcie profilowe</h3>
+                {{ form_row(form.avatar) }}
             </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="#" class="btn btn-secondary">Cancel</a>
+            <div class="profile-form-column">
+                <h3 class="column-title">Personal data</h3>
+                {# Symfony automatycznie wygeneruje div.form-group, label.form-label i input.form-control #}
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.email) }}
+
+                <h3 class="column-title">Regional settings</h3>
+                {{ form_row(form.locale) }}
+                {{ form_row(form.timezone) }}
             </div>
-        </form>
+        </div>
+
+        <div class="form-actions">
+            {# Możesz też renderować przycisk bezpośrednio z obiektu formularza, jeśli go tam zdefiniowałeś #}
+            {{ form_row(form.save) }}
+        </div>
+
+        {{ form_end(form) }}
     </div>
 {% endblock %}
