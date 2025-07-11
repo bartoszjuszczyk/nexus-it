@@ -3,6 +3,7 @@ imports:
 
 parameters:
     app_title: "%env(APP_TITLE)%"
+    avatar_directory: '%kernel.project_dir%/public/uploads/user/avatar'
 
 services:
     _defaults:
@@ -11,4 +12,8 @@ services:
 
     App\:
         resource: '../src/'
+
+    App\Service\User\AvatarUploader:
+        arguments:
+            $targetDirectory: '%avatar_directory%'
 

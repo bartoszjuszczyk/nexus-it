@@ -9,8 +9,26 @@
 
         <div class="profile-grid">
             <div class="profile-avatar-column">
-                <h3 class="column-title">Zdjęcie profilowe</h3>
-                {{ form_row(form.avatar) }}
+                <div class="form-group avatar-uploader-wrapper">
+                    <h3 class="column-title">Zdjęcie profilowe</h3>
+                    <div class="avatar-uploader">
+                        <div class="current-avatar">
+                            <img id="avatar-preview"
+                                 src="{{ form.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}"
+                                 alt="Current avatar">
+                        </div>
+
+                        {{ form_widget(form.avatar) }}
+
+                        <label for="{{ form.avatar.vars.id }}" class="btn btn-secondary">
+                            {{ form.avatar.vars.label }}
+                        </label>
+
+                        <p class="form-text">{{ form_help(form.avatar) }}</p>
+
+                        {{ form_errors(form.avatar) }}
+                    </div>
+                </div>
             </div>
 
             <div class="profile-form-column">

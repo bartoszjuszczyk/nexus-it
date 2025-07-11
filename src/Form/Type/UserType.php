@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\File;
 
 class UserType extends AbstractType
 {
@@ -35,17 +36,22 @@ class UserType extends AbstractType
                 'label' => 'Email',
                 'required' => false,
             ])
-//            ->add('plainPassword', RepeatedType::class, [
-//                'type' => PasswordType::class,
-//                'invalid_message' => 'The password fields must match.',
-//                'first_options' => ['label' => 'New Password', 'hash_property_path' => 'password'],
-//                'second_options' => ['label' => 'Repeat Password'],
-//                'mapped' => false,
-//            ])
             ->add('avatar', FileType::class, [
                 'mapped' => false,
-                'label' => 'Avatar',
+                'label' => 'Choose image',
                 'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please use JPG, PNG or GIF format image.',
+                    ]),
+                ],
+                'help' => 'JPG, PNG or GIF. Maximum 2MB.',
             ])
             ->add('locale', LocaleType::class, [
                 'label' => 'Locale',
