@@ -51,11 +51,11 @@ p {
 }
 
 a {
-    color: $primary-color;
+    color: $text-color;
     text-decoration: none;
 
     &:hover {
-        text-decoration: underline;
+        text-decoration: none;
     }
 }
 
@@ -136,71 +136,6 @@ a {
 
 textarea.form-control {
     min-height: 120px;
-}
-
-// Karta Zgłoszenia
-.ticket-card {
-    background-color: $surface-color;
-    border: 1px solid $border-color;
-    border-radius: $border-radius;
-    padding: $spacing-unit * 1.5;
-    margin-bottom: $spacing-unit;
-    box-shadow: $box-shadow;
-    transition: box-shadow 0.2s ease;
-
-    &:hover {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .ticket-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: $spacing-unit;
-        border-bottom: 1px solid $border-color;
-        padding-bottom: $spacing-unit;
-    }
-
-    .ticket-title {
-        font-size: 1.25rem;
-        margin: 0;
-    }
-
-    .ticket-meta {
-        font-size: 0.875rem;
-        color: $text-muted;
-    }
-}
-
-// Etykiety statusów
-.status-badge {
-    display: inline-block;
-    padding: 0.35em 0.65em;
-    font-size: 0.75em;
-    font-weight: $font-weight-bold;
-    line-height: 1;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: $border-radius * 2;
-
-    &.status-new {
-        background-color: $status-new;
-    }
-
-    &.status-in-progress {
-        background-color: $status-in-progress;
-        color: #000;
-    }
-
-    &.status-resolved {
-        background-color: $status-resolved;
-    }
-
-    &.status-closed {
-        background-color: $status-closed;
-    }
 }
 
 // Tabele

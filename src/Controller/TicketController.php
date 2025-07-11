@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ticket;
 use App\Entity\TicketAttachment;
 use App\Form\Type\TicketType;
+use App\Repository\TicketRepository;
 use App\Service\Ticket\AttachmentUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,12 +16,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TicketController extends AbstractController
 {
     #[Route('/tickets', name: 'app_ticket_list')]
-    public function index(): Response
-    {
+    public function index(
+        TicketRepository $ticketRepository,
+    ): Response {
+        if ($this->isGranted('ROLE_SUPPORT')) {
+            $tickets = $ticketRepository->findAll();
+        } else {
+            $user = $this->getUser();
+            $tickets = $ticketRepository->findByUser($user);
+        }
+
         return $this->render('ticket/index.html.twig', [
             'app_title' => $this->getParameter('app_title'),
-            'page_title' => $this->getParameter('app_title').' – My Tickets',
-            'board_title' => 'My tickets',
+            'page_title' => $this->getParameter('app_title').' – Tickets',
+            'board_title' => 'Tickets',
+            'tickets' => $tickets,
         ]);
     }
 
