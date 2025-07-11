@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        {{ form_start(ticketForm) }}
+
+        {# Tytuł i opis renderowane standardowo #}
+        {{ form_row(ticketForm.title) }}
+        {{ form_row(ticketForm.description) }}
+
+        {# Ręczne renderowanie pola załączników dla lepszego UX #}
+        <div class="form-group">
+            {# Etykieta z naszego motywu #}
+            {{ form_label(ticketForm.attachments) }}
+
+            <div class="custom-file-upload">
+                {# Ukryty widget pola input #}
+                {{ form_widget(ticketForm.attachments, {'attr': {'class': 'file-input'}}) }}
+
+                {# Widoczna dla użytkownika etykieta, która wygląda jak przycisk #}
+                <label for="{{ ticketForm.attachments.vars.id }}" class="btn btn-secondary">
+                    <i class="fa-solid fa-upload"></i> Choose files...
+                </label>
+            </div>
+
+            {# Kontener, w którym JavaScript wyświetli listę wybranych plików #}
+            <div id="file-list-container" class="file-list"></div>
+
+            {# Wyświetlanie błędów walidacji #}
+            {{ form_errors(ticketForm.attachments) }}
+        </div>
+
+        <div class="form-actions">
+            {{ form_row(ticketForm.save) }}
+        </div>
+
+        {{ form_end(ticketForm) }}
+    </div>
+{% endblock %}

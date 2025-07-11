@@ -1,0 +1,121 @@
+.ticket-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $surface-color;
+    padding: $spacing-unit $spacing-unit * 2;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    margin-bottom: $spacing-unit * 1.5;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+// Główna siatka (grid) dla widoku zgłoszenia
+.ticket-view-grid {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-unit * 2;
+
+    @media (max-width: $breakpoint-lg) {
+        flex-direction: column;
+    }
+}
+
+.ticket-main-content {
+    flex: 2; // Główna kolumna jest 2x szersza
+    min-width: 0; // Zapobiega "wypychaniu" layoutu przez długie słowa
+}
+
+.ticket-sidebar {
+    flex: 1;
+    width: 100%; // Dla widoku mobilnego
+}
+
+// Historia konwersacji
+.conversation-title {
+    margin-top: $spacing-unit * 2;
+    margin-bottom: $spacing-unit;
+    font-weight: $font-weight-bold;
+}
+
+.conversation-item {
+    display: flex;
+    gap: $spacing-unit;
+    margin-bottom: $spacing-unit * 1.5;
+
+    .conversation-avatar img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .conversation-body.card {
+        flex-grow: 1;
+        box-shadow: none; // Usuwamy cień, jeśli nie pasuje
+    }
+}
+
+// Styl dla zmiany statusu
+.status-change-item {
+    align-items: center;
+    color: $text-muted;
+    font-size: 0.9rem;
+    padding: calc($spacing-unit / 2);
+
+    .conversation-icon {
+        background-color: lighten($background-light, 3%);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+// Lista szczegółów w panelu bocznym
+.details-list {
+    dt {
+        font-weight: $font-weight-bold;
+        color: $text-color;
+    }
+
+    dd {
+        margin-left: 0;
+        margin-bottom: $spacing-unit;
+        color: $text-muted;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+// Lista załączników
+.attachments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li a {
+        display: block;
+        padding: calc($spacing-unit / 2);
+        border-radius: calc($border-radius / 2);
+        text-decoration: none;
+        color: $text-color;
+
+        &:hover {
+            background-color: $background-light;
+            text-decoration: none;
+        }
+
+        i {
+            margin-right: calc($spacing-unit / 2);
+            color: $primary-color;
+        }
+    }
+}

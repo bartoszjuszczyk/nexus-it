@@ -13,8 +13,8 @@ final class CmsController extends AbstractController
     {
         return $this->render('dashboard.html.twig', [
             'app_title' => $this->getParameter('app_title'),
-            'page_title' => $this->getParameter('app_title').' – My Tickets',
-            'board_title' => 'My tickets',
+            'page_title' => $this->getParameter('app_title').' – Dashboard',
+            'board_title' => 'Dashboard',
         ]);
     }
 }

@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div class="ticket-view-header">
+        <div class="ticket-view-title">
+            <h2 class="mb-0">{{ ticket.title }}</h2>
+        </div>
+        <div class="ticket-view-status">
+            {# Używamy tego samego komponentu statusu, co na liście #}
+            {#            <span class="status-badge status-{{ ticket.status|lower|replace({' ': '-'}) }}">{{ ticket.status }}</span> #}
+        </div>
+    </div>
+
+    <div class="ticket-view-grid">
+        <div class="ticket-main-content">
+
+            <div class="card">
+                <div class="card-header">
+                    Issued by:
+                    <strong>{{ ticket.author.firstname }} {{ ticket.author.lastname }}</strong> at {{ ticket.createdAt|date('d.m.Y H:i') }}
+                </div>
+                <div class="card-body">
+                    {{ ticket.description|nl2br }} {# Filtr nl2br zamienia nowe linie na tagi <br> #}
+                </div>
+            </div>
+
+            <div class="ticket-conversation">
+                <h3 class="conversation-title">Ticket history</h3>
+
+                {# Pętla po wszystkich zdarzeniach (komentarzach, zmianach statusu etc.) #}
+                {#                {% for event in events %} #}
+                {#                    #}{# Wyświetlanie komentarza #}
+                {#                    {% if event.type == 'comment' %} #}
+                {#                        <div class="conversation-item comment-item"> #}
+                {#                            <div class="conversation-avatar"> #}
+                {#                                <img src="{{ event.author.avatarUrl ?? asset('images/default-avatar.png') }}" alt="Avatar"> #}
+                {#                            </div> #}
+                {#                            <div class="conversation-body card"> #}
+                {#                                <div class="card-header"> #}
+                {#                                    <strong>{{ event.author.fullName }}</strong> #}
+                {#                                    <span class="text-muted ms-2">{{ event.createdAt|date('d.m.Y H:i') }}</span> #}
+                {#                                </div> #}
+                {#                                <div class="card-body"> #}
+                {#                                    {{ event.content|nl2br }} #}
+                {#                                </div> #}
+                {#                            </div> #}
+                {#                        </div> #}
+                {#                    {% endif %} #}
+
+                {#                    #}{# Wyświetlanie zmiany statusu #}
+                {#                    {% if event.type == 'status_change' %} #}
+                {#                        <div class="conversation-item status-change-item"> #}
+                {#                            <div class="conversation-icon"><i class="fa-solid fa-flag"></i></div> #}
+                {#                            <div class="conversation-body"> #}
+                {#                                <strong>{{ event.author.fullName }}</strong> zmienił status na #}
+                {#                                <span class="status-badge status-{{ event.newStatus|lower|replace({' ': '-'}) }}">{{ event.newStatus }}</span> #}
+                {#                                <span class="text-muted ms-2">({{ event.createdAt|date('d.m.Y H:i') }})</span> #}
+                {#                            </div> #}
+                {#                        </div> #}
+                {#                    {% endif %} #}
+                {#                {% else %} #}
+                {#                    <p class="text-muted">Brak zdarzeń dla tego zgłoszenia.</p> #}
+                {#                {% endfor %} #}
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>Add message</h4>
+                </div>
+                <div class="card-body">
+                    {#                    {{ form_start(commentForm) }} #}
+                    {#                    {{ form_row(commentForm.content) }} #}
+                    {#                    {{ form_row(commentForm.attachments) }} #}{# Jeśli komentarze mogą mieć załączniki #}
+                    {#                    <div class="form-actions"> #}
+                    {#                        {{ form_row(commentForm.save) }} #}
+                    {#                    </div> #}
+                    {#                    {{ form_end(commentForm) }} #}
+                </div>
+            </div>
+        </div>
+
+        <div class="ticket-sidebar">
+            <div class="card">
+                <div class="card-header"><h4>Ticket details</h4></div>
+                <div class="card-body">
+                    <dl class="details-list">
+                        <dt>Number</dt>
+                        <dd>#{{ ticket.id }}</dd>
+
+                        <dt>Status</dt>
+                        <dd>
+                            {#                            <span class="status-badge status-{{ ticket.status|lower|replace({' ': '-'}) }}">{{ ticket.status }}</span> #}
+                        </dd>
+
+                        <dt>Author</dt>
+                        <dd>{{ ticket.author.firstname }} {{ ticket.author.lastname }}</dd>
+
+                        <dt>Assigned to</dt>
+                        <dd>{{ ticket.assignee.fullName ?? 'Brak' }}</dd>
+
+                        <dt>Created at</dt>
+                        <dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>
+                        {% if ticket.lastRepliedAt %}
+                            <dt>Last replied at</dt>
+                            <dd>{{ ticket.lastRepliedAt|date('d.m.Y H:i') }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+
+            {#            {% if ticket.attachments|length > 0 %} #}
+            <div class="card">
+                <div class="card-header"><h4>Attachments</h4></div>
+                <div class="card-body">
+                    <ul class="attachments-list">
+                        {#                            {% for attachment in ticket.attachments %} #}
+                        {#                                <li> #}
+                        {#                                    <a href="{{ path('app_attachment_download', {id: attachment.id}) }}"> #}
+                        {#                                        <i class="fa-solid fa-file-arrow-down"></i> {{ attachment.originalFilename }} #}
+                        {#                                    </a> #}
+                        {#                                </li> #}
+                        {#                            {% endfor %} #}
+                    </ul>
+                </div>
+            </div>
+            {#            {% endif %} #}
+
+            {# Sekcja widoczna tylko dla pracowników IT #}
+            {% if is_granted('ROLE_SUPPORT') %}
+                <div class="card">
+                    <div class="card-header"><h4>Actions</h4></div>
+                    <div class="card-body">
+                        {# Formularz zmiany statusu #}
+                        {# {{ form(statusForm) }} #}
+                        <hr>
+                        {# Formularz przypisania pracownika #}
+                        {# {{ form(assignForm) }} #}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

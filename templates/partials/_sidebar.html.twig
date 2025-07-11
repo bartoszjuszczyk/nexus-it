@@ -1,18 +1,19 @@
 <aside class="app-sidebar">
     <div class="sidebar-header">
-        <a href="#" class="sidebar-brand">{{ app_title }}</a>
+        <a href="{{ path('app_cms_home') }}" class="sidebar-brand">{{ app_title }}</a>
     </div>
     <nav class="sidebar-nav">
         <ul>
             <li>
-                {# Tutaj będziesz musiał dodać logikę do dynamicznego ustawiania klasy 'active' #}
-                <a href="#">
+                <a href="{{ path('app_ticket_list') }}"
+                   class="{{ app.request.attributes.get('_route') == 'app_ticket_list' ? 'active' : '' }}">
                     <i class="fa-solid fa-ticket"></i>
                     <span>My tickets</span>
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{ path('app_ticket_new') }}"
+                   class="{{ app.request.attributes.get('_route') == 'app_ticket_new' ? 'active' : '' }}">
                     <i class="fa-solid fa-plus-circle"></i>
                     <span>New ticket</span>
                 </a>
@@ -24,7 +25,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_user_edit') }}">
+                <a href="{{ path('app_user_edit') }}"
+                   class="{{ app.request.attributes.get('_route') == 'app_user_edit' ? 'active' : '' }}">
                     <i class="fa-solid fa-user"></i>
                     <span>My profile</span>
                 </a>
