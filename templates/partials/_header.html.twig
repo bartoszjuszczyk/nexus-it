@@ -5,7 +5,12 @@
         </button>
         <h1 class="page-title">{{ board_title }}</h1>
     </div>
-    <div class="header-right">
-        <span class="user-info">Hello, {{ app.user.firstname }} {{ app.user.lastname }}</span>
-    </div>
+    <a href="{{ path('app_user_edit') }}">
+        <div class="header-right">
+            <span class="user-info">Hello, {{ app.user.firstname }} {{ app.user.lastname }}</span>
+            <div class="header-avatar">
+                <img src="{{ app.user.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}" alt="User avatar">
+            </div>
+        </div>
+    </a>
 </header>

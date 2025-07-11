@@ -16,10 +16,34 @@
     height: 65px;
     flex-shrink: 0;
 
+    a {
+        text-decoration: none;
+        color: $text-color;
+
+        &:hover {
+            text-decoration: none;
+            color: $text-color;
+        }
+    }
+
     .header-left, .header-right {
         display: flex;
         align-items: center;
         gap: $spacing-unit;
+    }
+
+    .header-avatar {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid $surface-color;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
     }
 
     .page-title {
