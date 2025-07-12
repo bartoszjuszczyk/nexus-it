@@ -46,6 +46,10 @@
     gap: $spacing-unit;
     margin-bottom: $spacing-unit * 1.5;
 
+    .text-muted.ms-auto {
+        margin-left: auto;
+    }
+
     .conversation-avatar img {
         width: 40px;
         height: 40px;
@@ -55,11 +59,10 @@
 
     .conversation-body.card {
         flex-grow: 1;
-        box-shadow: none; // Usuwamy cień, jeśli nie pasuje
+        box-shadow: none;
     }
 }
 
-// Styl dla zmiany statusu
 .status-change-item {
     align-items: center;
     color: $text-muted;
@@ -77,7 +80,6 @@
     }
 }
 
-// Lista szczegółów w panelu bocznym
 .details-list {
     dt {
         font-weight: $font-weight-bold;
@@ -95,7 +97,6 @@
     }
 }
 
-// Lista załączników
 .attachments-list {
     list-style: none;
     padding: 0;
@@ -172,7 +173,6 @@
     }
 }
 
-// Etykiety statusów
 .status-badge {
     display: inline-block;
     padding: 0.35em 0.65em;
@@ -194,11 +194,71 @@
         color: #000;
     }
 
-    &.status-resolved {
+    &.status-awaiting-customer-response {
+        background-color: $status-awaiting-customer-response;
+    }
+
+    &.status-completed {
         background-color: $status-resolved;
     }
 
     &.status-closed {
         background-color: $status-closed;
     }
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+}
+
+.meta-event {
+    align-items: center;
+    color: $text-muted;
+    font-size: 0.9rem;
+    padding: calc($spacing-unit / 2) 0;
+
+    .conversation-icon {
+        background-color: lighten($background-light, 3%);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $secondary-color;
+    }
+
+    strong {
+        color: $text-color;
+    }
+}
+
+.comment-item--support .card {
+    border-left: 3px solid $primary-color;
+}
+
+.comment-item--internal .card {
+    background-color: #fffbeb;
+    border-left: 3px solid #fec83c;
+}
+
+.internal-note-badge {
+    display: inline-block;
+    margin-left: $spacing-unit;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #a18239;
+    padding: 0.2em 0.6em;
+    background-color: #fef3d9;
+    border-radius: 5px;
+
+    i {
+        margin-right: 4px;
+    }
+}
+
+.comment-item--current-user {
+    flex-direction: row-reverse;
 }

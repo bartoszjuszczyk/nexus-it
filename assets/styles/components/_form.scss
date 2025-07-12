@@ -90,3 +90,23 @@
     padding: 0.25rem 0.6rem;
     font-size: 0.875rem;
 }
+
+.form-check {
+    display: flex;
+    align-items: center; // Wyrównanie w pionie
+    gap: 0.5rem; // Odstęp między checkboxem a tekstem
+    margin-bottom: $spacing-unit; // Zachowujemy dolny margines jak w .form-group
+}
+
+// Usuwamy domyślne style z etykiety, gdy jest w .form-check
+.form-check .form-label {
+    margin-bottom: 0;
+    font-weight: $font-weight-bold;
+}
+
+// Zwiększamy rozmiar samego checkboxa
+.form-check input[type="checkbox"] {
+    width: 1.25em; // Zwiększamy szerokość
+    height: 1.25em; // i wysokość
+    flex-shrink: 0; // Zapobiega kurczeniu się w kontenerze flex
+}

@@ -4,9 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Ticket;
 use App\Entity\Ticket\TicketAttachment;
+use App\Entity\User;
+use App\Form\Type\CommentType;
+use App\Form\Type\StatusChangeType;
 use App\Form\Type\TicketType;
+use App\Repository\Ticket\TicketEventRepository;
 use App\Repository\TicketRepository;
 use App\Service\Ticket\AttachmentUploader;
+use App\Service\Ticket\TicketEvent\TicketEventManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +27,7 @@ final class TicketController extends AbstractController
         if ($this->isGranted('ROLE_SUPPORT')) {
             $tickets = $ticketRepository->findAll();
         } else {
+            /** @var User $user */
             $user = $this->getUser();
             $tickets = $ticketRepository->findByUser($user);
         }
@@ -81,12 +87,119 @@ final class TicketController extends AbstractController
     #[Route('/tickets/{id}', name: 'app_ticket_view')]
     public function view(
         Ticket $ticket,
+        TicketEventRepository $ticketEventRepository,
     ): Response {
+        $commentForm = $this->createForm(CommentType::class, options: [
+            'action' => $this->generateUrl('app_ticket_add_comment', ['id' => $ticket->getId()]),
+            'method' => 'POST',
+        ]);
+        $statusChangeForm = $this->createForm(StatusChangeType::class, options: [
+            'action' => $this->generateUrl('app_ticket_change_status', ['id' => $ticket->getId()]),
+            'method' => 'POST',
+        ]);
+
+        $ticketEvents = $ticketEventRepository->findBy(
+            ['ticket' => $ticket],
+            ['createdAt' => 'DESC']
+        );
+
+        if (!$this->isGranted('ROLE_SUPPORT')) {
+            $ticketEvents = array_filter($ticketEvents, function ($ticketEvent) {
+                return !($ticketEvent instanceof Ticket\TicketEvent\InternalCommentEvent);
+            });
+        }
+
         return $this->render('ticket/view.html.twig', [
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – Ticket: #'.$ticket->getId(),
             'board_title' => 'Ticket #'.$ticket->getId(),
             'ticket' => $ticket,
+            'commentForm' => $commentForm,
+            'ticketEvents' => $ticketEvents,
+            'statusChangeForm' => $statusChangeForm,
         ]);
+    }
+
+    #[Route('/tickets/{id}/comment', name: 'app_ticket_add_comment', methods: ['POST'])]
+    public function addComment(
+        Ticket $ticket,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        TicketEventManager $ticketEventManager,
+        AttachmentUploader $attachmentUploader,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+        $form = $this->createForm(CommentType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $comment = $form->get('comment')->getData();
+                $isSupport = $this->isGranted('ROLE_SUPPORT');
+                $isInternal = false;
+                if ($form->has('is_internal')) {
+                    $isInternal = $form->get('is_internal')->getData();
+                }
+
+                if ($isSupport && $isInternal) {
+                    $ticketEventManager->createInternalCommentEvent($ticket, $user, $comment);
+                    $this->addFlash('success', 'Internal comment created successfully!');
+                } elseif ($isSupport) {
+                    $ticketEventManager->createSupportCommentEvent($ticket, $user, $comment);
+                    $this->addFlash('success', 'Comment created successfully!');
+                } else {
+                    $ticketEventManager->createCommentEvent($ticket, $user, $comment);
+                    $this->addFlash('success', 'Comment created successfully!');
+                }
+
+                $attachments = $form->get('attachments')->getData();
+                if ($attachments) {
+                    foreach ($attachments as $attachment) {
+                        $fileName = $attachmentUploader->upload($attachment);
+                        $attachmentEntity = new TicketAttachment();
+                        $attachmentEntity->setAuthor($user);
+                        $attachmentEntity->setFile($fileName);
+                        $ticket->addTicketAttachment($attachmentEntity);
+                        $ticketEventManager->createAttachmentEvent($ticket, $user, $attachmentEntity);
+                    }
+                }
+
+                $entityManager->flush();
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'There was an error creating the comment.');
+            }
+        }
+
+        return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
+    }
+
+    #[Route('/tickets/{id}/change-status', name: 'app_ticket_change_status', methods: ['POST'])]
+    public function changeStatus(
+        Ticket $ticket,
+        Request $request,
+        TicketEventManager $ticketEventManager,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+        $form = $this->createForm(StatusChangeType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $oldStatus = $ticket->getStatus();
+                $newStatus = $form->get('newStatus')->getData();
+                $ticket->setStatus($newStatus);
+                $entityManager->persist($ticket);
+                $ticketEventManager->createStatusChangeEvent($ticket, $user, $oldStatus, $newStatus);
+                $entityManager->flush();
+                $this->addFlash('success', 'Status updated successfully!');
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'There was an error changing the status.');
+            }
+        }
+
+        return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
     }
 }

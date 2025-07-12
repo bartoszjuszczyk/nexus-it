@@ -7,6 +7,7 @@ use App\Entity\Ticket;
 use App\Entity\User;
 use App\Repository\Ticket\TicketEventRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TicketEventRepository::class)]
 #[ORM\Table(name: 'ticket_event')]
@@ -22,6 +23,8 @@ use Doctrine\ORM\Mapping as ORM;
 ])]
 abstract class TicketEvent
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

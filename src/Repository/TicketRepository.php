@@ -19,11 +19,11 @@ class TicketRepository extends ServiceEntityRepository
 
     public function findByUser(User $user): array
     {
-        $userId = $user->getId();
+        $authorId = $user->getId();
 
         return $this->createQueryBuilder('t')
-            ->andWhere('t.user_id = :userId')
-            ->setParameter('userId', $userId)
+            ->andWhere('t.author = :authorId')
+            ->setParameter('authorId', $authorId)
             ->orderBy('t.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
