@@ -8,17 +8,21 @@
         {{ form_start(form) }}
 
         <div class="profile-grid">
-            <div class="profile-avatar-column">
+            <div class="profile-avatar-column" data-controller="avatar-preview">
                 <div class="form-group avatar-uploader-wrapper">
                     <h3 class="column-title">Profile image</h3>
                     <div class="avatar-uploader">
                         <div class="current-avatar">
                             <img id="avatar-preview"
+                                 data-avatar-preview-target="preview"
                                  src="{{ form.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}"
                                  alt="Current avatar">
                         </div>
 
-                        {{ form_widget(form.avatar) }}
+                        {{ form_widget(form.avatar, { 'attr': {
+                            'data-avatar-preview-target': 'input',
+                            'data-action': 'change->avatar-preview#updatePreview'
+                        }}) }}
 
                         <label for="{{ form.avatar.vars.id }}" class="btn btn-secondary">
                             {{ form.avatar.vars.label }}
