@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Ticket;
 
-use App\Repository\TicketAttachmentRepository;
+use App\Entity\Ticket;
+use App\Entity\User;
+use App\Repository\Ticket\TicketAttachmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TicketAttachmentRepository::class)]

@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Ticket\TicketAttachment;
+use App\Entity\Ticket\TicketEvent;
+use App\Entity\Ticket\TicketStatus;
 use App\Repository\TicketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -41,9 +44,16 @@ class Ticket
     #[ORM\ManyToOne]
     private ?TicketStatus $status = null;
 
+    /**
+     * @var Collection<int, TicketEvent>
+     */
+    #[ORM\OneToMany(targetEntity: TicketEvent::class, mappedBy: 'ticket', orphanRemoval: true)]
+    private Collection $ticketEvents;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
+        $this->ticketEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,6 +147,36 @@ class Ticket
     public function setStatus(?TicketStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TicketEvent>
+     */
+    public function getTicketEvents(): Collection
+    {
+        return $this->ticketEvents;
+    }
+
+    public function addTicketEvent(TicketEvent $ticketEvent): static
+    {
+        if (!$this->ticketEvents->contains($ticketEvent)) {
+            $this->ticketEvents->add($ticketEvent);
+            $ticketEvent->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketEvent(TicketEvent $ticketEvent): static
+    {
+        if ($this->ticketEvents->removeElement($ticketEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($ticketEvent->getTicket() === $this) {
+                $ticketEvent->setTicket(null);
+            }
+        }
 
         return $this;
     }

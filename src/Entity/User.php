@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Ticket\TicketAttachment;
+use App\Entity\Ticket\TicketEvent;
 use App\Repository\UserRepository;
 use Deprecated;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -63,10 +65,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: TicketAttachment::class, mappedBy: 'author')]
     private Collection $ticketAttachments;
 
+    /**
+     * @var Collection<int, TicketEvent>
+     */
+    #[ORM\OneToMany(targetEntity: TicketEvent::class, mappedBy: 'author')]
+    private Collection $ticketEvents;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->ticketAttachments = new ArrayCollection();
+        $this->ticketEvents = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -264,6 +273,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($ticketAttachment->getAuthor() === $this) {
                 $ticketAttachment->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TicketEvent>
+     */
+    public function getTicketEvents(): Collection
+    {
+        return $this->ticketEvents;
+    }
+
+    public function addTicketEvent(TicketEvent $ticketEvent): static
+    {
+        if (!$this->ticketEvents->contains($ticketEvent)) {
+            $this->ticketEvents->add($ticketEvent);
+            $ticketEvent->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketEvent(TicketEvent $ticketEvent): static
+    {
+        if ($this->ticketEvents->removeElement($ticketEvent)) {
+            // set the owning side to null (unless already changed)
+            if ($ticketEvent->getAuthor() === $this) {
+                $ticketEvent->setAuthor(null);
             }
         }
 

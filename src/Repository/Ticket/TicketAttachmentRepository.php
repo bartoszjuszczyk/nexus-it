@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Ticket;
 
-use App\Entity\TicketStatus;
+use App\Entity\Ticket\TicketAttachment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<TicketStatus>
+ * @extends ServiceEntityRepository<TicketAttachment>
  */
-class TicketStatusRepository extends ServiceEntityRepository
+class TicketAttachmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, TicketStatus::class);
+        parent::__construct($registry, TicketAttachment::class);
     }
 
     //    /**
-    //     * @return TicketStatus[] Returns an array of TicketStatus objects
+    //     * @return TicketAttachment[] Returns an array of TicketAttachment objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class TicketStatusRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?TicketStatus
+    //    public function findOneBySomeField($value): ?TicketAttachment
     //    {
     //        return $this->createQueryBuilder('t')
     //            ->andWhere('t.exampleField = :val')

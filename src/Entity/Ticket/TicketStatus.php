@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Ticket;
 
-use App\Repository\TicketStatusRepository;
+use App\Repository\Ticket\TicketStatusRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
