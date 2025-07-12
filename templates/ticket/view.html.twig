@@ -199,6 +199,7 @@
             {% if is_granted('ROLE_SUPPORT') %}
                 <div class="card">
                     <div class="card-body">
+                        {% if statusChangeForm is not null %}
                         <div class="action-form">
                             {{ form_start(statusChangeForm) }}
 
@@ -214,6 +215,7 @@
                         {# Formularz przypisania pracownika #}
                         {# {{ form(assignForm) }} #}
                     </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

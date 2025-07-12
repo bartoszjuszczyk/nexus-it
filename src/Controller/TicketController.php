@@ -93,10 +93,13 @@ final class TicketController extends AbstractController
             'action' => $this->generateUrl('app_ticket_add_comment', ['id' => $ticket->getId()]),
             'method' => 'POST',
         ]);
-        $statusChangeForm = $this->createForm(StatusChangeType::class, options: [
-            'action' => $this->generateUrl('app_ticket_change_status', ['id' => $ticket->getId()]),
-            'method' => 'POST',
-        ]);
+        $statusChangeForm = null;
+        if ($this->isGranted('ROLE_SUPPORT')) {
+            $statusChangeForm = $this->createForm(StatusChangeType::class, options: [
+                'action' => $this->generateUrl('app_ticket_change_status', ['id' => $ticket->getId()]),
+                'method' => 'POST',
+            ]);
+        }
 
         $ticketEvents = $ticketEventRepository->findBy(
             ['ticket' => $ticket],
