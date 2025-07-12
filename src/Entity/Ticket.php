@@ -38,6 +38,9 @@ class Ticket
     #[ORM\OneToMany(targetEntity: TicketAttachment::class, mappedBy: 'ticket', cascade: ['persist'])]
     private Collection $ticketAttachments;
 
+    #[ORM\ManyToOne]
+    private ?TicketStatus $status = null;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
@@ -122,6 +125,18 @@ class Ticket
                 $ticketAttachment->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?TicketStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?TicketStatus $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
