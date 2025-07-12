@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ticket;
-use App\Entity\TicketAttachment;
+use App\Entity\Ticket\TicketAttachment;
 use App\Form\Type\TicketType;
 use App\Repository\TicketRepository;
 use App\Service\Ticket\AttachmentUploader;
