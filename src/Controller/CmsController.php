@@ -12,8 +12,8 @@ final class CmsController extends AbstractController
     public function index(): Response
     {
         return $this->render('dashboard.html.twig', [
-            'app_title' => $this->getParameter('app_title'),
-            'page_title' => $this->getParameter('app_title').' – Dashboard',
+            'appTitle' => $this->getParameter('app_title'),
+            'pageTitle' => $this->getParameter('app_title').' – Dashboard',
             'board_title' => 'Dashboard',
         ]);
     }

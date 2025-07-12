@@ -45,8 +45,8 @@ final class UserController extends AbstractController
         }
 
         return $this->render('user/edit.html.twig', [
-            'app_title' => $this->getParameter('app_title'),
-            'page_title' => $this->getParameter('app_title').' – User Edit',
+            'appTitle' => $this->getParameter('app_title'),
+            'pageTitle' => $this->getParameter('app_title').' – User Edit',
             'board_title' => 'User edit',
             'form' => $form,
         ]);
