@@ -1,0 +1,85 @@
+.flash-container {
+    position: fixed;
+    bottom: $spacing-unit * 1.5;
+    left: $spacing-unit * 1.5;
+    z-index: 999;
+    width: 350px;
+
+    @media (max-width: $breakpoint-sm) {
+        width: auto;
+        left: $spacing-unit;
+        right: $spacing-unit;
+        bottom: $spacing-unit;
+    }
+}
+
+.flash-message {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: $spacing-unit;
+    margin-bottom: $spacing-unit;
+    border-radius: $border-radius;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: $surface-color;
+    color: $text-color;
+    border-left: 5px solid $secondary-color;
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+
+    // Style dla różnych typów wiadomości
+    &.flash-success {
+        border-left-color: $status-resolved;
+
+        .flash-icon {
+            color: $status-resolved;
+        }
+    }
+
+    &.flash-error {
+        border-left-color: $status-closed;
+
+        .flash-icon {
+            color: $status-closed;
+        }
+    }
+
+    &.flash-info, &.flash-notice {
+        border-left-color: $primary-color;
+
+        .flash-icon {
+            color: $primary-color;
+        }
+    }
+}
+
+.flash-icon {
+    font-size: 1.5rem;
+    margin-right: $spacing-unit;
+    flex-shrink: 0;
+}
+
+.flash-content {
+    flex-grow: 1;
+    padding-right: $spacing-unit * 1.5;
+}
+
+.flash-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: $font-weight-bold;
+    line-height: 1;
+    color: $text-muted;
+    opacity: 0.5;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+        opacity: 1;
+        color: $text-color;
+    }
+}

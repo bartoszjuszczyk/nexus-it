@@ -36,10 +36,14 @@ final class UserController extends AbstractController
                     return $this->redirectToRoute('app_user_edit');
                 }
             }
-            $entityManager->persist($user);
-            $entityManager->flush();
+            try {
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Your changes have been saved.');
+                $this->addFlash('success', 'Your changes have been saved.');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'There was an error saving your changes.');
+            }
 
             return $this->redirectToRoute('app_user_edit');
         }
