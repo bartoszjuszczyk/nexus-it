@@ -98,7 +98,7 @@
                         <dd>{{ ticket.author.firstname }} {{ ticket.author.lastname }}</dd>
 
                         <dt>Assigned to</dt>
-                        <dd>{{ ticket.assignee.fullName ?? 'Brak' }}</dd>
+                        <dd>{{ ticket.assignee.fullName ?? 'None' }}</dd>
 
                         <dt>Created at</dt>
                         <dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>

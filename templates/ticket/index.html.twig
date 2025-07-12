@@ -15,7 +15,7 @@
                             <span class="status-badge status-resolved">Rozwiązane</span>
                         </div>
                         <div class="ticket-body">
-                            <p>{{ ticket.description }}</p>
+                            <p>{{ ticket.description|wordSlice(50) }}</p>
                         </div>
                         <div class="ticket-footer">
                             <span class="ticket-meta">ID: #{{ ticket.id }}</span>
