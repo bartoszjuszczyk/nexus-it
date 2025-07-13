@@ -50,6 +50,9 @@ class Ticket
     #[ORM\OneToMany(targetEntity: TicketEvent::class, mappedBy: 'ticket', orphanRemoval: true)]
     private Collection $ticketEvents;
 
+    #[ORM\ManyToOne]
+    private ?User $assigned_to = null;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
@@ -177,6 +180,18 @@ class Ticket
                 $ticketEvent->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAssignedTo(): ?User
+    {
+        return $this->assigned_to;
+    }
+
+    public function setAssignedTo(?User $assigned_to): static
+    {
+        $this->assigned_to = $assigned_to;
 
         return $this;
     }

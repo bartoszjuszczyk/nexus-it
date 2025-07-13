@@ -7,6 +7,7 @@ use App\Entity\Ticket\TicketAttachment;
 use App\Entity\User;
 use App\Form\Type\CommentType;
 use App\Form\Type\StatusChangeType;
+use App\Form\Type\TicketAssignType;
 use App\Form\Type\TicketFilterType;
 use App\Form\Type\TicketType;
 use App\Repository\Ticket\TicketEventRepository;
@@ -119,6 +120,13 @@ final class TicketController extends AbstractController
                 'method' => 'POST',
             ]);
         }
+        $assignForm = null;
+        if ($this->isGranted('ROLE_ADMIN')) {
+            $assignForm = $this->createForm(TicketAssignType::class, options: [
+                'action' => $this->generateUrl('app_ticket_assign_worker', ['id' => $ticket->getId()]),
+                'method' => 'POST',
+            ]);
+        }
 
         $ticketEvents = $ticketEventRepository->findBy(
             ['ticket' => $ticket],
@@ -139,6 +147,7 @@ final class TicketController extends AbstractController
             'commentForm' => $commentForm,
             'ticketEvents' => $ticketEvents,
             'statusChangeForm' => $statusChangeForm,
+            'assignForm' => $assignForm,
         ]);
     }
 
@@ -219,6 +228,34 @@ final class TicketController extends AbstractController
                 $this->addFlash('success', 'Status updated successfully!');
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'There was an error changing the status.');
+            }
+        }
+
+        return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
+    }
+
+    #[Route('/tickets/{id}/assign-worker', name: 'app_ticket_assign_worker', methods: ['POST'])]
+    public function assignWorker(
+        Ticket $ticket,
+        Request $request,
+        TicketEventManager $ticketEventManager,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+        $form = $this->createForm(TicketAssignType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $assignedWorker = $form->get('assignedWorker')->getData();
+                $ticket->setAssignedTo($assignedWorker);
+                $entityManager->persist($ticket);
+                $ticketEventManager->createAssignEvent($ticket, $user, $assignedWorker);
+                $entityManager->flush();
+                $this->addFlash('success', 'Worker assigned successfully!');
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'There was an error assigning the worker.');
             }
         }
 

@@ -166,7 +166,7 @@
                         <dd>{{ ticket.author.fullname }}</dd>
 
                         <dt>Assigned to</dt>
-                        <dd>{{ ticket.assignee.fullName ?? 'None' }}</dd>
+                        <dd>{{ ticket.assignedTo.fullName ?? 'None' }}</dd>
 
                         <dt>Created at</dt>
                         <dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>
@@ -211,9 +211,20 @@
 
                             {{ form_end(statusChangeForm) }}
                         </div>
-                        {#                        <hr> #}
-                        {# Formularz przypisania pracownika #}
-                        {# {{ form(assignForm) }} #}
+                        {% if assignForm is not null %}
+                            <hr>
+                            <div class="action-form">
+                                {{ form_start(assignForm) }}
+
+                                {{ form_row(assignForm.assignedWorker) }}
+
+                                <div class="mt-3">
+                                    {{ form_row(assignForm.save) }}
+                                </div>
+
+                                {{ form_end(assignForm) }}
+                            </div>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>
