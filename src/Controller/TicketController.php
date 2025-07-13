@@ -12,6 +12,7 @@ use App\Form\Type\TicketFilterType;
 use App\Form\Type\TicketType;
 use App\Repository\Ticket\TicketEventRepository;
 use App\Repository\TicketRepository;
+use App\Service\Notification\NotificationManager;
 use App\Service\Ticket\AttachmentUploader;
 use App\Service\Ticket\TicketEvent\TicketEventManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -158,6 +159,7 @@ final class TicketController extends AbstractController
         EntityManagerInterface $entityManager,
         TicketEventManager $ticketEventManager,
         AttachmentUploader $attachmentUploader,
+        NotificationManager $notificationManager,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -174,13 +176,13 @@ final class TicketController extends AbstractController
                 }
 
                 if ($isSupport && $isInternal) {
-                    $ticketEventManager->createInternalCommentEvent($ticket, $user, $comment);
+                    $ticketEvent = $ticketEventManager->createInternalCommentEvent($ticket, $user, $comment);
                     $this->addFlash('success', 'Internal comment created successfully!');
                 } elseif ($isSupport) {
-                    $ticketEventManager->createSupportCommentEvent($ticket, $user, $comment);
+                    $ticketEvent = $ticketEventManager->createSupportCommentEvent($ticket, $user, $comment);
                     $this->addFlash('success', 'Comment created successfully!');
                 } else {
-                    $ticketEventManager->createCommentEvent($ticket, $user, $comment);
+                    $ticketEvent = $ticketEventManager->createCommentEvent($ticket, $user, $comment);
                     $this->addFlash('success', 'Comment created successfully!');
                 }
 
@@ -197,6 +199,7 @@ final class TicketController extends AbstractController
                 }
 
                 $entityManager->flush();
+                $notificationManager->process($ticketEvent);
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'There was an error creating the comment.');
             }

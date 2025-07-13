@@ -22,3 +22,16 @@ services:
         arguments:
             $targetDirectory: '%attachment_directory%'
 
+    App\Service\Notification\Notifier\:
+        resource: '../src/Service/Notification/Notifier/*'
+        tags: [ app.ticket_event_notifier ]
+
+    App\Service\Notification\Channel\:
+        resource: '../src/Service/Notification/Channel/*'
+        tags: [ app.ticket_event_channel ]
+
+    App\Service\Notification\NotificationManager:
+        bind:
+            $notifiers: !tagged_iterator app.ticket_event_notifier
+            $channels: !tagged_iterator app.ticket_event_channel
+
