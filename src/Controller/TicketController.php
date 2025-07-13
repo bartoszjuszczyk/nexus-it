@@ -7,6 +7,7 @@ use App\Entity\Ticket\TicketAttachment;
 use App\Entity\User;
 use App\Form\Type\CommentType;
 use App\Form\Type\StatusChangeType;
+use App\Form\Type\TicketFilterType;
 use App\Form\Type\TicketType;
 use App\Repository\Ticket\TicketEventRepository;
 use App\Repository\TicketRepository;
@@ -23,13 +24,29 @@ final class TicketController extends AbstractController
     #[Route('/tickets', name: 'app_ticket_list')]
     public function index(
         TicketRepository $ticketRepository,
+        Request $request,
     ): Response {
+        $filterForm = $this->createForm(TicketFilterType::class);
+        $filterForm->handleRequest($request);
+
+        if ($filterForm->isSubmitted() && $filterForm->isValid() && $filterForm->get('filter')->isClicked()) {
+            $filters = $filterForm->getData();
+
+            $cleanFilters = array_filter($filters);
+            $cleanFilters = array_map(function ($filter) {
+                return $filter->getId();
+            }, $cleanFilters);
+
+            return $this->redirectToRoute('app_ticket_list', $cleanFilters);
+        }
+
+        $filters = $request->query->all();
+        /** @var User $user */
+        $user = $this->getUser();
         if ($this->isGranted('ROLE_SUPPORT')) {
-            $tickets = $ticketRepository->findAll();
+            $tickets = $ticketRepository->findWithFilters($filters);
         } else {
-            /** @var User $user */
-            $user = $this->getUser();
-            $tickets = $ticketRepository->findByUser($user);
+            $tickets = $ticketRepository->findWithFilters($filters, $user);
         }
 
         return $this->render('ticket/index.html.twig', [
@@ -37,6 +54,8 @@ final class TicketController extends AbstractController
             'pageTitle' => $this->getParameter('app_title').' – Tickets',
             'board_title' => 'Tickets',
             'tickets' => $tickets,
+            'filterForm' => $filterForm,
+            'usedFilters' => $filters,
         ]);
     }
 

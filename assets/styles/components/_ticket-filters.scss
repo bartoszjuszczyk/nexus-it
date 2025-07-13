@@ -1,0 +1,41 @@
+.filter-bar {
+    margin-bottom: $spacing-unit * 1.5;
+    padding: $spacing-unit;
+
+    form {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: $spacing-unit * 2;
+
+        @media (max-width: $breakpoint-md) {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+}
+
+.filter-controls {
+    display: flex;
+    gap: $spacing-unit;
+    flex-grow: 1;
+
+    .form-group {
+        margin-bottom: 0;
+        flex-grow: 1;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+        flex-direction: column;
+    }
+}
+
+.filter-actions {
+    display: flex;
+    gap: calc($spacing-unit / 2);
+    flex-shrink: 0;
+
+    @media (max-width: $breakpoint-md) {
+        align-self: flex-end;
+    }
+}
