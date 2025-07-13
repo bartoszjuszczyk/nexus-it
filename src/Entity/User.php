@@ -183,6 +183,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getFullname(): ?string
+    {
+        return $this->firstname.' '.$this->lastname;
+    }
+
     public function getLocale(): ?string
     {
         return $this->locale;

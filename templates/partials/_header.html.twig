@@ -7,7 +7,7 @@
     </div>
     <a href="{{ path('app_user_edit') }}">
         <div class="header-right">
-            <span class="user-info">Hello, {{ app.user.firstname }} {{ app.user.lastname }}</span>
+            <span class="user-info">Hello, {{ app.user.fullname }}</span>
             <div class="header-avatar">
                 <img src="{{ app.user.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}" alt="User avatar">
             </div>
