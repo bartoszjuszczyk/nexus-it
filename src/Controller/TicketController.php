@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ticket;
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\User;
+use App\Exception\NotificationException;
 use App\Form\Type\CommentType;
 use App\Form\Type\StatusChangeType;
 use App\Form\Type\TicketAssignType;
@@ -177,13 +178,10 @@ final class TicketController extends AbstractController
 
                 if ($isSupport && $isInternal) {
                     $ticketEvent = $ticketEventManager->createInternalCommentEvent($ticket, $user, $comment);
-                    $this->addFlash('success', 'Internal comment created successfully!');
                 } elseif ($isSupport) {
                     $ticketEvent = $ticketEventManager->createSupportCommentEvent($ticket, $user, $comment);
-                    $this->addFlash('success', 'Comment created successfully!');
                 } else {
                     $ticketEvent = $ticketEventManager->createCommentEvent($ticket, $user, $comment);
-                    $this->addFlash('success', 'Comment created successfully!');
                 }
 
                 $attachments = $form->get('attachments')->getData();
@@ -197,9 +195,11 @@ final class TicketController extends AbstractController
                         $ticketEventManager->createAttachmentEvent($ticket, $user, $attachmentEntity);
                     }
                 }
-
                 $entityManager->flush();
+                $this->addFlash('success', 'Comment created successfully!');
                 $notificationManager->process($ticketEvent);
+            } catch (NotificationException $notificationException) {
+                $this->addFlash('error', 'There was an error sending the notification.');
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'There was an error creating the comment.');
             }
@@ -214,6 +214,7 @@ final class TicketController extends AbstractController
         Request $request,
         TicketEventManager $ticketEventManager,
         EntityManagerInterface $entityManager,
+        NotificationManager $notificationManager,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -226,9 +227,12 @@ final class TicketController extends AbstractController
                 $newStatus = $form->get('newStatus')->getData();
                 $ticket->setStatus($newStatus);
                 $entityManager->persist($ticket);
-                $ticketEventManager->createStatusChangeEvent($ticket, $user, $oldStatus, $newStatus);
+                $ticketEvent = $ticketEventManager->createStatusChangeEvent($ticket, $user, $oldStatus, $newStatus);
                 $entityManager->flush();
                 $this->addFlash('success', 'Status updated successfully!');
+                $notificationManager->process($ticketEvent);
+            } catch (NotificationException $notificationException) {
+                $this->addFlash('error', 'There was an error sending the notification.');
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'There was an error changing the status.');
             }
@@ -243,6 +247,7 @@ final class TicketController extends AbstractController
         Request $request,
         TicketEventManager $ticketEventManager,
         EntityManagerInterface $entityManager,
+        NotificationManager $notificationManager,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -254,9 +259,12 @@ final class TicketController extends AbstractController
                 $assignedWorker = $form->get('assignedWorker')->getData();
                 $ticket->setAssignedTo($assignedWorker);
                 $entityManager->persist($ticket);
-                $ticketEventManager->createAssignEvent($ticket, $user, $assignedWorker);
+                $ticketEvent = $ticketEventManager->createAssignEvent($ticket, $user, $assignedWorker);
                 $entityManager->flush();
                 $this->addFlash('success', 'Worker assigned successfully!');
+                $notificationManager->process($ticketEvent);
+            } catch (NotificationException $notificationException) {
+                $this->addFlash('error', 'There was an error sending the notification.');
             } catch (\Exception $exception) {
                 $this->addFlash('error', 'There was an error assigning the worker.');
             }

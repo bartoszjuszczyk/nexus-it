@@ -198,6 +198,10 @@
         background-color: $status-awaiting-customer-response;
     }
 
+    &.status-halted {
+        background-color: $status-halted;
+    }
+
     &.status-completed {
         background-color: $status-resolved;
     }

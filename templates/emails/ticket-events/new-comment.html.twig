@@ -1,0 +1,17 @@
+{% extends 'emails/_layout.html.twig' %}
+
+{% block content %}
+    <p>Hello,</p>
+    <p>
+        User <strong>{{ eventAuthorName }}</strong> add new comment in ticket:
+        <br><em>"{{ ticketTitle }}"</em>.
+    </p>
+    <blockquote style="border-left: 4px solid #dee2e6; padding-left: 15px; margin-left: 0; color: #6c757d;">
+        {{ comment|nl2br }}
+    </blockquote>
+    <p style="text-align: center; margin-top: 30px;">
+        <a href="{{ url('app_ticket_view', {id: ticketId}) }}" class="button" style="background-color: #007bff;">
+            Go to ticket
+        </a>
+    </p>
+{% endblock %}
