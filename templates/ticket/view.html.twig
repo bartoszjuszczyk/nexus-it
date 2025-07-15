@@ -8,8 +8,7 @@
             <h2 class="mb-0">{{ ticket.title }}</h2>
         </div>
         <div class="ticket-view-status">
-            {# Używamy tego samego komponentu statusu, co na liście #}
-            {#            <span class="status-badge status-{{ ticket.status|lower|replace({' ': '-'}) }}">{{ ticket.status }}</span> #}
+            <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
         </div>
     </div>
 
@@ -83,7 +82,7 @@
                                 <strong>{{ event.author.fullname }}</strong> changed status from
                                 <span class="status-badge status-{{ event.oldStatus.code }}">{{ event.oldStatus.label }}</span> to
                                 <span class="status-badge status-{{ event.newStatus.code }}">{{ event.newStatus.label }}</span>
-                                <span class="text-muted"> at {{ event.createdAt|date('H:i') }}</span>
+                                <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
                             </div>
                         </div>
                     {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AssignEvent') %}
@@ -92,7 +91,7 @@
                             <div class="conversation-body">
                                 <strong>{{ event.author.fullname }}</strong> assigned ticket to
                                 <strong>{{ event.assignedWorker.fullname }}</strong>
-                                <span class="text-muted"> o {{ event.createdAt|date('H:i') }}</span>
+                                <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
                             </div>
                         </div>
                     {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AttachmentEvent') %}
@@ -101,7 +100,7 @@
                             <div class="conversation-body">
                                 <strong>{{ event.author.fullname }}</strong> added attachment:
                                 <a href="{{ path('app_attachment_download', {id: event.attachment.id}) }}">{{ event.attachment.file }}</a>
-                                <span class="text-muted"> at {{ event.createdAt|date('H:i') }}</span>
+                                <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
                             </div>
                         </div>
                     {% else %}

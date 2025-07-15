@@ -9,6 +9,7 @@
 namespace App\Service\Notification;
 
 use App\Entity\Ticket\TicketEvent;
+use App\Exception\NotificationException;
 use App\Service\Notification\Channel\ChannelInterface;
 use App\Service\Notification\Notifier\NotifierInterface;
 
@@ -31,7 +32,11 @@ class NotificationManager
                 $notification = $notifier->createNotification($event);
 
                 foreach ($this->channels as $channel) {
-                    $channel->send($notification);
+                    try {
+                        $channel->send($notification);
+                    } catch (\Exception $e) {
+                        throw new NotificationException($e->getMessage());
+                    }
                 }
             }
         }

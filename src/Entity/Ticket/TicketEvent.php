@@ -20,6 +20,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
     EventType::STATUS_CHANGE->value => TicketEvent\StatusChangeEvent::class,
     EventType::ASSIGN->value => TicketEvent\AssignEvent::class,
     EventType::ATTACHMENT->value => TicketEvent\AttachmentEvent::class,
+    EventType::NEW_TICKET->value => TicketEvent\NewTicketEvent::class,
 ])]
 abstract class TicketEvent
 {

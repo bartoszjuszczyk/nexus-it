@@ -12,6 +12,7 @@ use App\Form\Type\TicketAssignType;
 use App\Form\Type\TicketFilterType;
 use App\Form\Type\TicketType;
 use App\Repository\Ticket\TicketEventRepository;
+use App\Repository\Ticket\TicketStatusRepository;
 use App\Repository\TicketRepository;
 use App\Service\Notification\NotificationManager;
 use App\Service\Ticket\AttachmentUploader;
@@ -67,7 +68,11 @@ final class TicketController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         AttachmentUploader $attachmentUploader,
+        TicketEventManager $ticketEventManager,
+        TicketStatusRepository $ticketStatusRepository,
+        NotificationManager $notificationManager,
     ): Response {
+        /** @var User $user */
         $user = $this->getUser();
         $ticket = new Ticket();
         $form = $this->createForm(TicketType::class, $ticket);
@@ -82,12 +87,17 @@ final class TicketController extends AbstractController
                         $attachmentEntity->setAuthor($user);
                         $attachmentEntity->setFile($fileName);
                         $ticket->addTicketAttachment($attachmentEntity);
+                        $ticketEventManager->createAttachmentEvent($ticket, $user, $attachmentEntity);
                     }
                 }
                 $ticket->setAuthor($user);
+                $ticketStatus = $ticketStatusRepository->findOneBy(['code' => 'new']);
+                $ticket->setStatus($ticketStatus);
+                $newTicketEvent = $ticketEventManager->createNewTicketEvent($ticket, $user);
+
                 $entityManager->persist($ticket);
                 $entityManager->flush();
-
+                $notificationManager->process($newTicketEvent);
                 $this->addFlash('success', 'Ticket created successfully!');
 
                 return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);

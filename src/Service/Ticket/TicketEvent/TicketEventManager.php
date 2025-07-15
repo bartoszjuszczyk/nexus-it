@@ -80,6 +80,15 @@ class TicketEventManager
         return $this->prepareAndPersistEvent($attachmentEvent, $ticket, $author);
     }
 
+    public function createNewTicketEvent(
+        Ticket $ticket,
+        User $author,
+    ): Ticket\TicketEvent\NewTicketEvent {
+        $newTicketEvent = new Ticket\TicketEvent\NewTicketEvent();
+
+        return $this->prepareAndPersistEvent($newTicketEvent, $ticket, $author);
+    }
+
     private function prepareAndPersistEvent(
         Ticket\TicketEvent $ticketEvent,
         Ticket $ticket,

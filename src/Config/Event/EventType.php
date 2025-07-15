@@ -16,4 +16,5 @@ enum EventType: int
     case STATUS_CHANGE = 4;
     case ASSIGN = 5;
     case ATTACHMENT = 6;
+    case NEW_TICKET = 7;
 }
