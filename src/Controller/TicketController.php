@@ -56,7 +56,7 @@ final class TicketController extends AbstractController
         return $this->render('ticket/index.html.twig', [
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – Tickets',
-            'board_title' => 'Tickets',
+            'boardTitle' => 'Tickets',
             'tickets' => $tickets,
             'filterForm' => $filterForm,
             'usedFilters' => $filters,
@@ -111,7 +111,7 @@ final class TicketController extends AbstractController
         return $this->render('ticket/new.html.twig', [
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – New Ticket',
-            'board_title' => 'My tickets',
+            'boardTitle' => 'My tickets',
             'ticketForm' => $form,
         ]);
     }
@@ -154,7 +154,7 @@ final class TicketController extends AbstractController
         return $this->render('ticket/view.html.twig', [
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – Ticket: #'.$ticket->getId(),
-            'board_title' => 'Ticket #'.$ticket->getId(),
+            'boardTitle' => 'Ticket #'.$ticket->getId(),
             'ticket' => $ticket,
             'commentForm' => $commentForm,
             'ticketEvents' => $ticketEvents,

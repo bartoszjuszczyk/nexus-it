@@ -110,3 +110,13 @@
     height: 1.25em; // i wysokość
     flex-shrink: 0; // Zapobiega kurczeniu się w kontenerze flex
 }
+
+.btn.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+
+    &:hover {
+        background-color: darken(#dc3545, 10%);
+        border-color: darken(#dc3545, 10%);
+    }
+}

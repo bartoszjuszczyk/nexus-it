@@ -18,11 +18,32 @@
                     <span>New ticket</span>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Knowledge base</span>
-                </a>
+            <li class="has-submenu {{ (app.request.attributes.get('_route') starts with 'app_category_' or app.request.attributes.get('_route') starts with 'app_article_') ? 'is-open' : '' }}"
+                data-controller="sidebar-menu">
+                {% if is_granted('ROLE_SUPPORT') %}
+                    <a href="#" data-action="click->sidebar-menu#toggle">
+                        <i class="fa-solid fa-book"></i>
+                        <span>Knowledge book</span>
+                        <i class="fa-solid fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="{{ path('app_article_list') }}" class="{{ app.request.attributes.get('_route') == 'app_article_list' ? 'active' : '' }}">
+                                <span>Articles</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('app_category_list') }}" class="{{ app.request.attributes.get('_route') == 'app_category_list' ? 'active' : '' }}">
+                                <span>Categories</span>
+                            </a>
+                        </li>
+                    </ul>
+                {% else %}
+                    <a href="{{ path('app_kb_index') }}" data-action="click->sidebar-menu#toggle">
+                        <i class="fa-solid fa-book"></i>
+                        <span>Knowledge book</span>
+                    </a>
+                {% endif %}
             </li>
             <li>
                 <a href="{{ path('app_user_edit') }}"
