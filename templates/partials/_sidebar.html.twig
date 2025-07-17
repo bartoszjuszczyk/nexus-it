@@ -23,7 +23,7 @@
                 {% if is_granted('ROLE_SUPPORT') %}
                     <a href="#" data-action="click->sidebar-menu#toggle">
                         <i class="fa-solid fa-book"></i>
-                        <span>Knowledge book</span>
+                        <span>Knowledge base</span>
                         <i class="fa-solid fa-chevron-down submenu-arrow"></i>
                     </a>
                     <ul class="submenu">
@@ -41,7 +41,7 @@
                 {% else %}
                     <a href="{{ path('app_kb_index') }}" data-action="click->sidebar-menu#toggle">
                         <i class="fa-solid fa-book"></i>
-                        <span>Knowledge book</span>
+                        <span>Knowledge base</span>
                     </a>
                 {% endif %}
             </li>
