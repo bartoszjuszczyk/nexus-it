@@ -66,6 +66,10 @@ class TicketEventManager
         $statusChangeEvent->setOldStatus($oldStatus);
         $statusChangeEvent->setNewStatus($newStatus);
 
+        if ('closed' === $newStatus->getCode()) {
+            $ticket->setClosedAt(new \DateTimeImmutable());
+        }
+
         return $this->prepareAndPersistEvent($statusChangeEvent, $ticket, $author);
     }
 

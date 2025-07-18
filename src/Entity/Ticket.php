@@ -53,6 +53,9 @@ class Ticket
     #[ORM\ManyToOne]
     private ?User $assigned_to = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $closedAt = null;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
@@ -192,6 +195,18 @@ class Ticket
     public function setAssignedTo(?User $assigned_to): static
     {
         $this->assigned_to = $assigned_to;
+
+        return $this;
+    }
+
+    public function getClosedAt(): ?\DateTimeImmutable
+    {
+        return $this->closedAt;
+    }
+
+    public function setClosedAt(?\DateTimeImmutable $closedAt): Ticket
+    {
+        $this->closedAt = $closedAt;
 
         return $this;
     }

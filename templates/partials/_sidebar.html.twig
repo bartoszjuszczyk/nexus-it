@@ -39,12 +39,22 @@
                         </li>
                     </ul>
                 {% else %}
-                    <a href="{{ path('app_kb_index') }}" data-action="click->sidebar-menu#toggle">
+                    <a href="{{ path('app_kb_index') }}"
+                       class="{{ app.request.attributes.get('_route') starts with 'app_kb_' ? 'active' : '' }}">
                         <i class="fa-solid fa-book"></i>
                         <span>Knowledge base</span>
                     </a>
                 {% endif %}
             </li>
+            {% if is_granted('ROLE_SUPPORT') %}
+                <li>
+                    <a href="{{ path('app_statistic_index') }}"
+                       class="{{ app.request.attributes.get('_route') == 'app_statistic_index' ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Statistics</span>
+                    </a>
+                </li>
+            {% endif %}
             <li>
                 <a href="{{ path('app_user_edit') }}"
                    class="{{ app.request.attributes.get('_route') == 'app_user_edit' ? 'active' : '' }}">

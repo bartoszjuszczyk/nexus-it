@@ -54,4 +54,60 @@ class TicketRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function countNewInLastDays(int $days): int
+    {
+        $dateCondition = (new \DateTime())->sub(new \DateInterval('P'.$days.'D'));
+        $tickets = $this->createQueryBuilder('t')
+            ->andWhere('t.createdAt >= :dateCondition')
+            ->setParameter('dateCondition', $dateCondition)
+            ->getQuery()
+            ->getResult();
+
+        return count($tickets);
+    }
+
+    public function findAverageCloseTime(): int
+    {
+        $qb = $this->createQueryBuilder('t');
+
+        $qb->select('t.createdAt', 't.closedAt')
+            ->where('t.closedAt IS NOT NULL');
+
+        $results = $qb->getQuery()->getResult();
+
+        if (empty($results)) {
+            return 0;
+        }
+
+        $totalSeconds = 0;
+        foreach ($results as $result) {
+            $diffInSeconds = $result['closedAt']->getTimestamp() - $result['createdAt']->getTimestamp();
+            $totalSeconds += $diffInSeconds;
+        }
+
+        $averageSeconds = (int) ($totalSeconds / count($results));
+
+        if (0 === $averageSeconds) {
+            return 0;
+        }
+
+        return 0 === (int) floor($averageSeconds / 86400) ? 1 : floor($averageSeconds / 86400);
+    }
+
+    public function findStatusBreakdown(): array
+    {
+        $result = [];
+        $tickets = $this->findAll();
+        foreach ($tickets as $ticket) {
+            $statusLabel = $ticket->getStatus()->getLabel();
+            if (isset($result[$statusLabel])) {
+                ++$result[$statusLabel];
+                continue;
+            }
+            $result[$statusLabel] = 1;
+        }
+
+        return $result;
+    }
 }
