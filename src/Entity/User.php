@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\Ticket\TicketEvent;
+use App\Entity\Ticket\TicketRating;
 use App\Repository\UserRepository;
 use Deprecated;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -77,12 +78,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'author')]
     private Collection $articles;
 
+    /**
+     * @var Collection<int, TicketRating>
+     */
+    #[ORM\OneToMany(targetEntity: TicketRating::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $ticketRatings;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->ticketAttachments = new ArrayCollection();
         $this->ticketEvents = new ArrayCollection();
         $this->articles = new ArrayCollection();
+        $this->ticketRatings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -345,6 +353,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($article->getAuthor() === $this) {
                 $article->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TicketRating>
+     */
+    public function getTicketRatings(): Collection
+    {
+        return $this->ticketRatings;
+    }
+
+    public function addTicketRating(TicketRating $ticketRating): static
+    {
+        if (!$this->ticketRatings->contains($ticketRating)) {
+            $this->ticketRatings->add($ticketRating);
+            $ticketRating->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketRating(TicketRating $ticketRating): static
+    {
+        if ($this->ticketRatings->removeElement($ticketRating)) {
+            // set the owning side to null (unless already changed)
+            if ($ticketRating->getAuthor() === $this) {
+                $ticketRating->setAuthor(null);
             }
         }
 

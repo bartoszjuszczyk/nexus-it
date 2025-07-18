@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\Ticket\TicketEvent;
+use App\Entity\Ticket\TicketRating;
 use App\Entity\Ticket\TicketStatus;
 use App\Repository\TicketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,10 +57,17 @@ class Ticket
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $closedAt = null;
 
+    /**
+     * @var Collection<int, TicketRating>
+     */
+    #[ORM\OneToMany(targetEntity: TicketRating::class, mappedBy: 'ticket', orphanRemoval: true)]
+    private Collection $ticketRatings;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
         $this->ticketEvents = new ArrayCollection();
+        $this->ticketRatings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -207,6 +215,36 @@ class Ticket
     public function setClosedAt(?\DateTimeImmutable $closedAt): Ticket
     {
         $this->closedAt = $closedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TicketRating>
+     */
+    public function getTicketRatings(): Collection
+    {
+        return $this->ticketRatings;
+    }
+
+    public function addTicketRating(TicketRating $ticketRating): static
+    {
+        if (!$this->ticketRatings->contains($ticketRating)) {
+            $this->ticketRatings->add($ticketRating);
+            $ticketRating->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicketRating(TicketRating $ticketRating): static
+    {
+        if ($this->ticketRatings->removeElement($ticketRating)) {
+            // set the owning side to null (unless already changed)
+            if ($ticketRating->getTicket() === $this) {
+                $ticketRating->setTicket(null);
+            }
+        }
 
         return $this;
     }

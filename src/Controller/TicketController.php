@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ticket;
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\User;
+use App\Event\TicketClosedEvent;
 use App\Exception\NotificationException;
 use App\Form\Type\CommentType;
 use App\Form\Type\StatusChangeType;
@@ -19,6 +20,7 @@ use App\Service\Ticket\AttachmentUploader;
 use App\Service\Ticket\TicketEvent\TicketEventManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -225,6 +227,7 @@ final class TicketController extends AbstractController
         TicketEventManager $ticketEventManager,
         EntityManagerInterface $entityManager,
         NotificationManager $notificationManager,
+        EventDispatcherInterface $eventDispatcher,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -234,10 +237,15 @@ final class TicketController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $oldStatus = $ticket->getStatus();
+                /** @var Ticket\TicketStatus $newStatus */
                 $newStatus = $form->get('newStatus')->getData();
                 $ticket->setStatus($newStatus);
                 $entityManager->persist($ticket);
                 $ticketEvent = $ticketEventManager->createStatusChangeEvent($ticket, $user, $oldStatus, $newStatus);
+                if ('closed' === $newStatus->getCode()) {
+                    $event = new TicketClosedEvent($ticket, $ticketEvent);
+                    $eventDispatcher->dispatch($event);
+                }
                 $entityManager->flush();
                 $this->addFlash('success', 'Status updated successfully!');
                 $notificationManager->process($ticketEvent);
@@ -281,5 +289,28 @@ final class TicketController extends AbstractController
         }
 
         return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
+    }
+
+    #[Route('/tickets/{id}/rate/{rate}', name: 'app_ticket_rate', methods: ['GET'])]
+    public function rate(
+        Ticket $ticket,
+        int $rate,
+        Request $request,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        try {
+            $ticketRating = new Ticket\TicketRating();
+            $ticketRating->setTicket($ticket);
+            $ticketRating->setRate($rate);
+            $ticketRating->setAuthor($ticket->getAuthor());
+            $ticketRating->setSourceIp($request->getClientIp());
+            $entityManager->persist($ticketRating);
+            $entityManager->flush();
+            $this->addFlash('success', 'Thank you for your feedback!');
+        } catch (\Exception $exception) {
+            $this->addFlash('error', 'There was an error rating the ticket.');
+        } finally {
+            return $this->redirectToRoute('app_ticket_list');
+        }
     }
 }
