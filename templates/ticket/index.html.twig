@@ -9,7 +9,7 @@
                 {% include 'partials/_ticket-filters.html.twig' with { 'form': filterForm } %}
                 {% for ticket in tickets %}
                     {% set card_class = '' %}
-                    {% if ticket.priority %}
+                    {% if ticket.priority and is_granted('ROLE_SUPPORT') %}
                         {% set card_class = 'ticket-card--' ~ ticket.priority.code %}
                     {% endif %}
                     <article class="ticket-card {{ card_class }}">
