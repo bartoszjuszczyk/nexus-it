@@ -84,6 +84,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: TicketRating::class, mappedBy: 'author', orphanRemoval: true)]
     private Collection $ticketRatings;
 
+    /**
+     * @var Collection<int, Equipment>
+     */
+    #[ORM\OneToMany(targetEntity: Equipment::class, mappedBy: 'assignedTo')]
+    private Collection $equipment;
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -91,6 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ticketEvents = new ArrayCollection();
         $this->articles = new ArrayCollection();
         $this->ticketRatings = new ArrayCollection();
+        $this->equipment = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -383,6 +390,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($ticketRating->getAuthor() === $this) {
                 $ticketRating->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Equipment>
+     */
+    public function getEquipment(): Collection
+    {
+        return $this->equipment;
+    }
+
+    public function addEquipment(Equipment $equipment): static
+    {
+        if (!$this->equipment->contains($equipment)) {
+            $this->equipment->add($equipment);
+            $equipment->setAssignedTo($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEquipment(Equipment $equipment): static
+    {
+        if ($this->equipment->removeElement($equipment)) {
+            // set the owning side to null (unless already changed)
+            if ($equipment->getAssignedTo() === $this) {
+                $equipment->setAssignedTo(null);
             }
         }
 

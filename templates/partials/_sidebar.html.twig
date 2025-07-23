@@ -46,7 +46,15 @@
                     </a>
                 {% endif %}
             </li>
+
             {% if is_granted('ROLE_SUPPORT') %}
+                <li>
+                    <a href="{{ path('app_equipment_list') }}"
+                       class="{{ app.request.attributes.get('_route') == 'app_equipment_list' ? 'active' : '' }}">
+                        <i class="fa-solid fa-desktop"></i>
+                        <span>Equipment</span>
+                    </a>
+                </li>
                 <li>
                     <a href="{{ path('app_statistic_index') }}"
                        class="{{ app.request.attributes.get('_route') == 'app_statistic_index' ? 'active' : '' }}">
