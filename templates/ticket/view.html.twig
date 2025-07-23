@@ -238,10 +238,16 @@
                         <hr>
                         <div class="action-form">
                             <label class="form-label">Change priority</label>
-                            <div class="btn-group-vertical w-100">
+                            <div class="priority-selector-links">
+                                <a href="{{ path('app_ticket_set_priority_none', {id: ticket.id}) }}"
+                                   class="priority-pill-link {% if ticket.priority is null %}is-active{% endif %}"
+                                   style="--priority-color: #adb5bd;">
+                                    None
+                                </a>
                                 {% for priority in priorities %}
-                                    <a href="{{ path('app_ticket_set_priority', {id: ticket.id, ticketPriority: priority.id }) }}" class="btn btn-outline-secondary text-start" style="color: {{ priority.secondaryColor }};">
-                                        <span class="dot me-2" style="background-color: {{ priority.primaryColor }};"></span>
+                                    <a href="{{ path('app_ticket_set_priority', {id: ticket.id, ticketPriority: priority.id }) }}"
+                                       class="priority-pill-link {% if ticket.priority and ticket.priority.id == priority.id %}is-active{% endif %}"
+                                       style="--priority-color: {{ priority.primaryColor }};">
                                         {{ priority.label }}
                                     </a>
                                 {% endfor %}

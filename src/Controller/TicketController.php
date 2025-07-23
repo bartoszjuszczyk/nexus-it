@@ -318,6 +318,23 @@ final class TicketController extends AbstractController
         }
     }
 
+    #[Route('/tickets/{id}/set_priority/none', name: 'app_ticket_set_priority_none', methods: ['GET'])]
+    public function setPriorityToNone(
+        Ticket $ticket,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        try {
+            $ticket->setPriority(null);
+            $entityManager->persist($ticket);
+            $entityManager->flush();
+            $this->addFlash('success', 'Priority changed successfully!');
+        } catch (\Exception $exception) {
+            $this->addFlash('error', 'There was an error changing the priority.');
+        }
+
+        return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
+    }
+
     #[Route('/tickets/{id}/set_priority/{ticketPriority}', name: 'app_ticket_set_priority', methods: ['GET'])]
     public function setPriority(
         Ticket $ticket,
