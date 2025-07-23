@@ -13,6 +13,7 @@ use App\Form\Type\TicketAssignType;
 use App\Form\Type\TicketFilterType;
 use App\Form\Type\TicketType;
 use App\Repository\Ticket\TicketEventRepository;
+use App\Repository\Ticket\TicketPriorityRepository;
 use App\Repository\Ticket\TicketStatusRepository;
 use App\Repository\TicketRepository;
 use App\Service\Notification\NotificationManager;
@@ -122,7 +123,9 @@ final class TicketController extends AbstractController
     public function view(
         Ticket $ticket,
         TicketEventRepository $ticketEventRepository,
+        TicketPriorityRepository $ticketPriorityRepository,
     ): Response {
+        $priorities = $ticketPriorityRepository->findAll();
         $commentForm = $this->createForm(CommentType::class, options: [
             'action' => $this->generateUrl('app_ticket_add_comment', ['id' => $ticket->getId()]),
             'method' => 'POST',
@@ -162,6 +165,7 @@ final class TicketController extends AbstractController
             'ticketEvents' => $ticketEvents,
             'statusChangeForm' => $statusChangeForm,
             'assignForm' => $assignForm,
+            'priorities' => $priorities,
         ]);
     }
 
@@ -312,5 +316,23 @@ final class TicketController extends AbstractController
         } finally {
             return $this->redirectToRoute('app_ticket_list');
         }
+    }
+
+    #[Route('/tickets/{id}/set_priority/{ticketPriority}', name: 'app_ticket_set_priority', methods: ['GET'])]
+    public function setPriority(
+        Ticket $ticket,
+        Ticket\TicketPriority $ticketPriority,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        try {
+            $ticket->setPriority($ticketPriority);
+            $entityManager->persist($ticket);
+            $entityManager->flush();
+            $this->addFlash('success', 'Priority changed successfully!');
+        } catch (\Exception $exception) {
+            $this->addFlash('error', 'There was an error changing the priority.');
+        }
+
+        return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
     }
 }

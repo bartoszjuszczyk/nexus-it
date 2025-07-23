@@ -266,3 +266,42 @@
 .comment-item--current-user {
     flex-direction: row-reverse;
 }
+
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.ticket-card--urgent {
+    border-left: 5px solid #c03131;
+    background-color: #fffcf1;
+}
+
+.ticket-card--high {
+    border-left: 5px solid #f13101;
+    background-color: #fffcf1;
+}
+
+.ticket-card--medium {
+    border-left: 5px solid #f0c001;
+    background-color: #fffcf1;
+}
+
+.ticket-card--low {
+    border-left: 5px solid #3a69c1;
+    background-color: #fffcf1;
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ticket-badges {
+    display: flex;
+    align-items: center;
+}

@@ -161,6 +161,17 @@
                             <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
                         </dd>
 
+                        <dt>Priority</dt>
+                        <dd>
+                            {% if ticket.priority %}
+                                <span class="badge" style="background-color: {{ ticket.priority.primaryColor }}; color: {{ ticket.priority.secondaryColor }};">
+                                    {{ ticket.priority.label }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">None</span>
+                            {% endif %}
+                        </dd>
+
                         <dt>Author</dt>
                         <dd>{{ ticket.author.fullname }}</dd>
 
@@ -224,6 +235,18 @@
                                 {{ form_end(assignForm) }}
                             </div>
                         {% endif %}
+                        <hr>
+                        <div class="action-form">
+                            <label class="form-label">Change priority</label>
+                            <div class="btn-group-vertical w-100">
+                                {% for priority in priorities %}
+                                    <a href="{{ path('app_ticket_set_priority', {id: ticket.id, ticketPriority: priority.id }) }}" class="btn btn-outline-secondary text-start" style="color: {{ priority.secondaryColor }};">
+                                        <span class="dot me-2" style="background-color: {{ priority.primaryColor }};"></span>
+                                        {{ priority.label }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                     {% endif %}
                 </div>

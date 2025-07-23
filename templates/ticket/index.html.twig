@@ -8,7 +8,11 @@
             <div class="ticket-list">
                 {% include 'partials/_ticket-filters.html.twig' with { 'form': filterForm } %}
                 {% for ticket in tickets %}
-                    <article class="ticket-card">
+                    {% set card_class = '' %}
+                    {% if ticket.priority %}
+                        {% set card_class = 'ticket-card--' ~ ticket.priority.code %}
+                    {% endif %}
+                    <article class="ticket-card {{ card_class }}">
                         <div class="ticket-header">
                             <h3 class="ticket-title">
                                 <a href="{{ path('app_ticket_view', {id: ticket.id}) }}">{{ ticket.title }}</a>

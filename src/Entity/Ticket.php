@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\Ticket\TicketEvent;
+use App\Entity\Ticket\TicketPriority;
 use App\Entity\Ticket\TicketRating;
 use App\Entity\Ticket\TicketStatus;
 use App\Repository\TicketRepository;
@@ -62,6 +63,9 @@ class Ticket
      */
     #[ORM\OneToMany(targetEntity: TicketRating::class, mappedBy: 'ticket', orphanRemoval: true)]
     private Collection $ticketRatings;
+
+    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    private ?TicketPriority $priority = null;
 
     public function __construct()
     {
@@ -245,6 +249,18 @@ class Ticket
                 $ticketRating->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPriority(): ?TicketPriority
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(?TicketPriority $priority): static
+    {
+        $this->priority = $priority;
 
         return $this;
     }

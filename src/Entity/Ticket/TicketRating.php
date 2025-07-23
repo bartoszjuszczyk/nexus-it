@@ -6,10 +6,13 @@ use App\Entity\Ticket;
 use App\Entity\User;
 use App\Repository\Ticket\TicketRatingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TicketRatingRepository::class)]
 class TicketRating
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
