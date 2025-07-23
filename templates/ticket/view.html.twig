@@ -179,6 +179,11 @@
                         <dt>Assigned to</dt>
                         <dd>{{ ticket.assignedTo.fullName ?? 'None' }}</dd>
 
+                        {% if ticket.equipment %}
+                            <dt>Related equipment</dt>
+                            <dd>{{ ticket.equipment.name }} ({{ ticket.equipment.inventoryNumber }})</dd>
+                        {% endif %}
+
                         <dt>Created at</dt>
                         <dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>
                         {% if ticket.lastRepliedAt %}

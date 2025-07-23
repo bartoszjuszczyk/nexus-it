@@ -2,7 +2,11 @@
 
 namespace App\Form\Type;
 
+use App\Entity\Equipment;
 use App\Entity\Ticket;
+use App\Repository\EquipmentRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -15,6 +19,11 @@ use Symfony\Component\Validator\Constraints\File;
 
 class TicketType extends AbstractType
 {
+    public function __construct(
+        private readonly Security $security,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -23,6 +32,18 @@ class TicketType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
+            ])
+            ->add('equipment', EntityType::class, [
+                'class' => Equipment::class,
+                'choice_label' => 'name',
+                'required' => false,
+                'label' => 'Equipment',
+                'placeholder' => 'Choose related equipment...',
+                'query_builder' => function (EquipmentRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->andWhere('e.assignedTo = :user')
+                        ->setParameter('user', $this->security->getUser());
+                },
             ])
             ->add('attachments', FileType::class, [
                 'label' => 'Attachments',

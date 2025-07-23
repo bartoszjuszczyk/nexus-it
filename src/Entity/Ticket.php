@@ -67,6 +67,9 @@ class Ticket
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     private ?TicketPriority $priority = null;
 
+    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    private ?Equipment $equipment = null;
+
     public function __construct()
     {
         $this->ticketAttachments = new ArrayCollection();
@@ -261,6 +264,18 @@ class Ticket
     public function setPriority(?TicketPriority $priority): static
     {
         $this->priority = $priority;
+
+        return $this;
+    }
+
+    public function getEquipment(): ?Equipment
+    {
+        return $this->equipment;
+    }
+
+    public function setEquipment(?Equipment $equipment): static
+    {
+        $this->equipment = $equipment;
 
         return $this;
     }
