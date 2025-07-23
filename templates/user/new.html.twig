@@ -14,7 +14,7 @@
                         <div class="current-avatar">
                             <img id="avatar-preview"
                                  data-avatar-preview-target="preview"
-                                 src="{{ form.vars.value.avatar ? asset('uploads/user/avatar/' ~ form.vars.value.avatar) : asset('images/default-avatar.png') }}"
+                                 src="{{ form.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}"
                                  alt="Current avatar">
                         </div>
 

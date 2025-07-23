@@ -24,7 +24,7 @@ class AssignNotifier implements NotifierInterface
         $eventAuthor = $event->getAuthor();
 
         return (new Notification())
-            ->setSubject(sprintf('Ticket #%s: New support comment in ticket.', $ticket->getId()))
+            ->setSubject(sprintf('Ticket #%s: Ticket has been assigned to you.', $ticket->getId()))
             ->setRecipients([
                 [
                     'email' => $ticket->getAssignedTo()->getEmail(),
