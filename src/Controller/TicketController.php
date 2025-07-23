@@ -6,6 +6,7 @@ use App\Entity\Ticket;
 use App\Entity\Ticket\TicketAttachment;
 use App\Entity\User;
 use App\Event\TicketClosedEvent;
+use App\Event\TicketEventCreated;
 use App\Exception\NotificationException;
 use App\Form\Type\CommentType;
 use App\Form\Type\StatusChangeType;
@@ -28,6 +29,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class TicketController extends AbstractController
 {
+    public function __construct(
+        private EventDispatcherInterface $eventDispatcher,
+    ) {
+    }
+
     #[Route('/tickets', name: 'app_ticket_list')]
     public function index(
         TicketRepository $ticketRepository,
@@ -101,6 +107,7 @@ final class TicketController extends AbstractController
                 $entityManager->persist($ticket);
                 $entityManager->flush();
                 $notificationManager->process($newTicketEvent);
+                $this->dispatchTicketEventCreatedEvent($newTicketEvent);
                 $this->addFlash('success', 'Ticket created successfully!');
 
                 return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
@@ -199,7 +206,7 @@ final class TicketController extends AbstractController
                 } else {
                     $ticketEvent = $ticketEventManager->createCommentEvent($ticket, $user, $comment);
                 }
-
+                $ticketAttachmentEvents = [];
                 $attachments = $form->get('attachments')->getData();
                 if ($attachments) {
                     foreach ($attachments as $attachment) {
@@ -208,11 +215,15 @@ final class TicketController extends AbstractController
                         $attachmentEntity->setAuthor($user);
                         $attachmentEntity->setFile($fileName);
                         $ticket->addTicketAttachment($attachmentEntity);
-                        $ticketEventManager->createAttachmentEvent($ticket, $user, $attachmentEntity);
+                        $ticketAttachmentEvents[] = $ticketEventManager->createAttachmentEvent($ticket, $user, $attachmentEntity);
                     }
                 }
                 $entityManager->flush();
                 $this->addFlash('success', 'Comment created successfully!');
+                $this->dispatchTicketEventCreatedEvent($ticketEvent);
+                foreach ($ticketAttachmentEvents as $ticketAttachmentEvent) {
+                    $this->dispatchTicketEventCreatedEvent($ticketAttachmentEvent);
+                }
                 $notificationManager->process($ticketEvent);
             } catch (NotificationException $notificationException) {
                 $this->addFlash('error', 'There was an error sending the notification.');
@@ -231,7 +242,6 @@ final class TicketController extends AbstractController
         TicketEventManager $ticketEventManager,
         EntityManagerInterface $entityManager,
         NotificationManager $notificationManager,
-        EventDispatcherInterface $eventDispatcher,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -248,10 +258,11 @@ final class TicketController extends AbstractController
                 $ticketEvent = $ticketEventManager->createStatusChangeEvent($ticket, $user, $oldStatus, $newStatus);
                 if ('closed' === $newStatus->getCode()) {
                     $event = new TicketClosedEvent($ticket, $ticketEvent);
-                    $eventDispatcher->dispatch($event);
+                    $this->eventDispatcher->dispatch($event);
                 }
                 $entityManager->flush();
                 $this->addFlash('success', 'Status updated successfully!');
+                $this->dispatchTicketEventCreatedEvent($ticketEvent);
                 $notificationManager->process($ticketEvent);
             } catch (NotificationException $notificationException) {
                 $this->addFlash('error', 'There was an error sending the notification.');
@@ -284,6 +295,7 @@ final class TicketController extends AbstractController
                 $ticketEvent = $ticketEventManager->createAssignEvent($ticket, $user, $assignedWorker);
                 $entityManager->flush();
                 $this->addFlash('success', 'Worker assigned successfully!');
+                $this->dispatchTicketEventCreatedEvent($ticketEvent);
                 $notificationManager->process($ticketEvent);
             } catch (NotificationException $notificationException) {
                 $this->addFlash('error', 'There was an error sending the notification.');
@@ -351,5 +363,11 @@ final class TicketController extends AbstractController
         }
 
         return $this->redirectToRoute('app_ticket_view', ['id' => $ticket->getId()]);
+    }
+
+    private function dispatchTicketEventCreatedEvent(Ticket\TicketEvent $ticketEvent): void
+    {
+        $ticketEventCreatedEvent = new TicketEventCreated($ticketEvent);
+        $this->eventDispatcher->dispatch($ticketEventCreatedEvent);
     }
 }

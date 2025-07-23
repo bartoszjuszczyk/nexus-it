@@ -1,0 +1,9 @@
+<div class="conversation-item meta-event">
+    <div class="conversation-icon"><i class="fa-solid fa-flag"></i></div>
+    <div class="conversation-body">
+        <strong>{{ event.author.fullname }}</strong> changed status from
+        <span class="status-badge status-{{ event.oldStatus.code }}">{{ event.oldStatus.label }}</span> to
+        <span class="status-badge status-{{ event.newStatus.code }}">{{ event.newStatus.label }}</span>
+        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
+    </div>
+</div>

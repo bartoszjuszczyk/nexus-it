@@ -3,11 +3,11 @@
 {% block title %}{{ pageTitle }}{% endblock %}
 
 {% block content %}
-    <div class="ticket-view-header">
+    <div class="ticket-view-header" data-controller="live-update" data-live-update-topic-value="{{ '/ticket/' ~ ticket.id }}">
         <div class="ticket-view-title">
             <h2 class="mb-0">{{ ticket.title }}</h2>
         </div>
-        <div class="ticket-view-status">
+        <div class="ticket-view-status" data-live-update-target="status">
             <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
         </div>
     </div>
@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="ticket-conversation">
+            <div class="ticket-conversation" data-live-update-target="conversation">
                 <h3 class="conversation-title">Ticket history</h3>
 
                 {% for event in ticketEvents %}
