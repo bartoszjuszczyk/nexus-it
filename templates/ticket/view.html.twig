@@ -3,13 +3,14 @@
 {% block title %}{{ pageTitle }}{% endblock %}
 
 {% block content %}
-    <div data-controller="live-update" data-live-update-topic-value="{{ '/tickets/' ~ ticket.id }}">
+    <div data-controller="live-update" data-live-update-topic-value="{{ '/tickets/' ~ ticket.id }}"
+         data-live-update-current-user-id-value="{{ app.user.id }}">
         <div class="ticket-view-header">
             <div class="ticket-view-title">
                 <h2 class="mb-0">{{ ticket.title }}</h2>
             </div>
             <div class="ticket-view-status" data-live-update-target="status">
-                <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
+                {% include 'ticket/_status_badge.html.twig' with {'status': ticket.status } %}
             </div>
         </div>
 
@@ -29,83 +30,22 @@
                 <div class="ticket-conversation">
                     <h3 class="conversation-title">Ticket history</h3>
                     <div data-live-update-target="conversation">
+                        {% if ticketEvents is null %}
+                            <p class="text-muted">No history</p>
+                        {% endif %}
                         {% for event in ticketEvents %}
                             {% if event is instanceof('App\\Entity\\Ticket\\TicketEvent\\CommentEvent') %}
-                                <div class="conversation-item comment-item {% if app.user and app.user == event.author %}comment-item--current-user{% endif %}">
-                                    <div class="conversation-avatar">
-                                        <img src="{{ event.author.avatar ? asset('uploads/user/avatar/' ~ event.author.avatar) : asset('images/default-avatar.png') }}" alt="Avatar">
-                                    </div>
-                                    <div class="conversation-body card">
-                                        <div class="card-header">
-                                            <strong>{{ event.author.fullname }}</strong>
-                                            <span class="text-muted ms-auto">{{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                        </div>
-                                        <div class="card-body">
-                                            {{ event.comment|nl2br }}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\InternalCommentEvent') %}
-                                <div class="conversation-item comment-item comment-item--internal {% if app.user and app.user == event.author %}comment-item--current-user{% endif %}">
-                                    <div class="conversation-avatar">
-                                        <img src="{{ event.author.avatar ? asset('uploads/user/avatar/' ~ event.author.avatar) : asset('images/default-avatar.png') }}" alt="Avatar">
-                                    </div>
-                                    <div class="conversation-body card">
-                                        <div class="card-header">
-                                            <strong>{{ event.author.fullname }}</strong>
-                                            <span class="internal-note-badge"><i class="fa-solid fa-user-shield"></i> Internal comment</span>
-                                            <span class="text-muted ms-auto">{{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                        </div>
-                                        <div class="card-body">
-                                            {{ event.comment|nl2br }}
-                                        </div>
-                                    </div>
-                                </div>
+                                {% include 'ticket/events/_comment.html.twig' %}
+                            {% elseif (event is instanceof('App\\Entity\\Ticket\\TicketEvent\\InternalCommentEvent') and is_granted('ROLE_SUPPORT')) %}
+                                {% include 'ticket/events/_internal_comment.html.twig' %}
                             {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\SupportCommentEvent') %}
-                                <div class="conversation-item comment-item coment-item--support {% if app.user and app.user == event.author %}comment-item--current-user{% endif %}">
-                                    <div class="conversation-avatar">
-                                        <img src="{{ event.author.avatar ? asset('uploads/user/avatar/' ~ event.author.avatar) : asset('images/default-avatar.png') }}" alt="Avatar">
-                                    </div>
-                                    <div class="conversation-body card">
-                                        <div class="card-header">
-                                            <strong>{{ event.author.fullname }}</strong>
-                                            <span class="text-muted ms-auto">{{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                        </div>
-                                        <div class="card-body">
-                                            {{ event.comment|nl2br }}
-                                        </div>
-                                    </div>
-                                </div>
+                                {% include 'ticket/events/_support_comment.html.twig' %}
                             {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\StatusChangeEvent') %}
-                                <div class="conversation-item meta-event">
-                                    <div class="conversation-icon"><i class="fa-solid fa-flag"></i></div>
-                                    <div class="conversation-body">
-                                        <strong>{{ event.author.fullname }}</strong> changed status from
-                                        <span class="status-badge status-{{ event.oldStatus.code }}">{{ event.oldStatus.label }}</span> to
-                                        <span class="status-badge status-{{ event.newStatus.code }}">{{ event.newStatus.label }}</span>
-                                        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                    </div>
-                                </div>
+                                {% include 'ticket/events/_status_change.html.twig' %}
                             {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AssignEvent') %}
-                                <div class="conversation-item meta-event">
-                                    <div class="conversation-icon"><i class="fa-solid fa-user-plus"></i></div>
-                                    <div class="conversation-body">
-                                        <strong>{{ event.author.fullname }}</strong> assigned ticket to
-                                        <strong>{{ event.assignedWorker.fullname }}</strong>
-                                        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                    </div>
-                                </div>
+                                {% include 'ticket/events/_assign.html.twig' %}
                             {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AttachmentEvent') %}
-                                <div class="conversation-item meta-event">
-                                    <div class="conversation-icon"><i class="fa-solid fa-paperclip"></i></div>
-                                    <div class="conversation-body">
-                                        <strong>{{ event.author.fullname }}</strong> added attachment:
-                                        <a href="{{ path('app_attachment_download', {id: event.attachment.id}) }}">{{ event.attachment.file }}</a>
-                                        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <p class="text-muted">No comments</p>
+                                {% include 'ticket/events/_attachment.html.twig' %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -160,13 +100,14 @@
 
                             <dt>Status</dt>
                             <dd data-live-update-target="status">
-                                <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
+                                {% include 'ticket/_status_badge.html.twig' with {'status': ticket.status } %}
                             </dd>
                             {% if is_granted('ROLE_SUPPORT') %}
                                 <dt>Priority</dt>
                                 <dd>
                                     {% if ticket.priority %}
-                                        <span class="badge" style="background-color: {{ ticket.priority.primaryColor }}; color: {{ ticket.priority.secondaryColor }};">
+                                        <span class="badge"
+                                              style="background-color: {{ ticket.priority.primaryColor }}; color: {{ ticket.priority.secondaryColor }};">
                                         {{ ticket.priority.label }}
                                     </span>
                                     {% else %}
@@ -200,7 +141,7 @@
                     <div class="card">
                         <div class="card-header"><h4>Attachments</h4></div>
                         <div class="card-body">
-                            <ul class="attachments-list">
+                            <ul class="attachments-list" data-live-update-target="attachmentList">
                                 {% for attachment in ticket.ticketAttachments %}
                                     <li>
                                         <a href="{{ path('app_attachment_download', {id: attachment.id}) }}">

@@ -9,7 +9,6 @@
 namespace App\EventListener;
 
 use App\Entity\Ticket\TicketEvent;
-use App\Entity\Ticket\TicketEvent\StatusChangeEvent;
 use App\Event\TicketEventCreated;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Mercure\HubInterface;
@@ -31,20 +30,40 @@ class TicketEventSubscriber
         $ticket = $ticketEvent->getTicket();
         $topic = sprintf('/tickets/%d', $ticket->getId());
 
-        $data = [];
-
-        if ($ticketEvent instanceof StatusChangeEvent) {
-            $data = [
+        $data = match (true) {
+            $ticketEvent instanceof TicketEvent\StatusChangeEvent => [
                 'type' => 'status_change',
                 'timelineHtml' => $this->twig->render('ticket/events/_status_change.html.twig', ['event' => $ticketEvent]),
                 'newStatusBadgeHtml' => $this->twig->render('ticket/_status_badge.html.twig', ['status' => $ticketEvent->getNewStatus()]),
-            ];
-        } else {
-            //            $data = [
-            //                'type' => 'new_comment',
-            //                'timelineHtml' => $this->twig->render('ticket/events/_comment.html.twig', ['event' => $ticketEvent]),
-            //            ];
-        }
+            ],
+            $ticketEvent instanceof TicketEvent\CommentEvent => [
+                'type' => 'new_comment',
+                'timelineHtml' => $this->twig->render('ticket/events/_comment.html.twig', ['event' => $ticketEvent]),
+                'authorId' => $ticketEvent->getAuthor()->getId(),
+            ],
+            $ticketEvent instanceof TicketEvent\SupportCommentEvent => [
+                'type' => 'new_support_comment',
+                'timelineHtml' => $this->twig->render('ticket/events/_support_comment.html.twig', ['event' => $ticketEvent]),
+                'authorId' => $ticketEvent->getAuthor()->getId(),
+            ],
+            $ticketEvent instanceof TicketEvent\InternalCommentEvent => [
+                'type' => 'new_internal_comment',
+                'timelineHtml' => $this->twig->render('ticket/events/_internal_comment.html.twig', ['event' => $ticketEvent]),
+                'authorId' => $ticketEvent->getAuthor()->getId(),
+            ],
+            $ticketEvent instanceof TicketEvent\AttachmentEvent => [
+                'type' => 'new_attachment',
+                'timelineHtml' => $this->twig->render('ticket/events/_attachment.html.twig', ['event' => $ticketEvent]),
+                'authorId' => $ticketEvent->getAuthor()->getId(),
+                'attachmentListHtml' => $this->twig->render('ticket/events/_attachment_list.html.twig', ['attachment' => $ticketEvent->getAttachment()]),
+            ],
+            $ticketEvent instanceof TicketEvent\AssignEvent => [
+                'type' => 'assign',
+                'timelineHtml' => $this->twig->render('ticket/events/_assign.html.twig', ['event' => $ticketEvent]),
+                'authorId' => $ticketEvent->getAuthor()->getId(),
+            ],
+            default => [],
+        };
 
         if (!empty($data)) {
             $update = new Update($topic, json_encode($data));

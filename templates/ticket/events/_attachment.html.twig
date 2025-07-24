@@ -1,0 +1,10 @@
+<div class="conversation-item meta-event">
+    <div class="conversation-icon"><i class="fa-solid fa-paperclip"></i></div>
+    <div class="conversation-body">
+        <strong>{{ event.author.fullname }}</strong> added attachment:
+        <a href="{{ path('app_attachment_download', {id: event.attachment.id}) }}">
+            {{ event.attachment.file }}
+        </a>
+        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
+    </div>
+</div>

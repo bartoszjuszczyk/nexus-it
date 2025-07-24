@@ -7,7 +7,7 @@ services:
             SERVER_NAME: ':80'
             MERCURE_PUBLISHER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
             MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeThisMercureHubJWTSecretKey!'
-            # Opcjonalnie - włączenie deweloperskich funkcji
+            MERCURE_JWT_SECRET: '!ChangeThisMercureHubJWTSecretKey!'
             MERCURE_EXTRA_DIRECTIVES: |
                 cors_origins http://localhost:3000 http://127.0.0.1:8000 https://${WARDEN_ENV_NAME}.test
                 demo
