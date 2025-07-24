@@ -5,7 +5,7 @@ export default class extends Controller {
     static values = {topic: String};
 
     connect() {
-        const url = new URL('https://127.0.0.1:9000');
+        const url = new URL('https://mercure.nexus-it.test/.well-known/mercure');
         url.searchParams.append('topic', this.topicValue);
         this.eventSource = new EventSource(url);
 
@@ -17,7 +17,9 @@ export default class extends Controller {
             }
 
             if (data.type === 'status_change' && data.newStatusBadgeHtml) {
-                this.statusTarget.innerHTML = data.newStatusBadgeHtml;
+                this.statusTargets.forEach(function (el) {
+                    el.innerHTML = data.newStatusBadgeHtml;
+                })
             }
         };
     }
