@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class EquipmentController extends AbstractController
 {
-    #[Route('/equipment', name: 'app_equipment_list')]
+    #[Route('/equipment', name: 'app_equipment_list', methods: ['GET'])]
     public function index(EquipmentRepository $equipmentRepository): Response
     {
         $equipment = $equipmentRepository->findAll();
@@ -26,7 +26,7 @@ final class EquipmentController extends AbstractController
         ]);
     }
 
-    #[Route('/equipment/new', name: 'app_equipment_new')]
+    #[Route('/equipment/new', name: 'app_equipment_new', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -56,7 +56,7 @@ final class EquipmentController extends AbstractController
         ]);
     }
 
-    #[Route('/equipment/{id}/edit', name: 'app_equipment_edit')]
+    #[Route('/equipment/{id}/edit', name: 'app_equipment_edit', methods: ['GET', 'POST'])]
     public function edit(
         Equipment $equipment,
         Request $request,
@@ -86,7 +86,7 @@ final class EquipmentController extends AbstractController
         ]);
     }
 
-    #[Route('/equipment/{id}/delete', name: 'app_equipment_delete')]
+    #[Route('/equipment/{id}/delete', name: 'app_equipment_delete', methods: ['POST'])]
     public function delete(
         Equipment $equipment,
         EntityManagerInterface $entityManager,

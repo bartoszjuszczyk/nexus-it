@@ -34,7 +34,7 @@ final class TicketController extends AbstractController
     ) {
     }
 
-    #[Route('/tickets', name: 'app_ticket_list')]
+    #[Route('/tickets', name: 'app_ticket_list', methods: ['GET'])]
     public function index(
         TicketRepository $ticketRepository,
         Request $request,
@@ -72,7 +72,7 @@ final class TicketController extends AbstractController
         ]);
     }
 
-    #[Route('/tickets/new', name: 'app_ticket_new')]
+    #[Route('/tickets/new', name: 'app_ticket_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -126,7 +126,7 @@ final class TicketController extends AbstractController
         ]);
     }
 
-    #[Route('/tickets/{id}', name: 'app_ticket_view')]
+    #[Route('/tickets/{id}', name: 'app_ticket_view', methods: ['GET'])]
     public function view(
         Ticket $ticket,
         TicketEventRepository $ticketEventRepository,

@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class TicketAttachmentController extends AbstractController
 {
-    #[Route('/attachment/download/{id}', name: 'app_attachment_download')]
+    #[Route('/attachment/download/{id}', name: 'app_attachment_download', methods: ['GET'])]
     public function index(
         TicketAttachment $attachment,
     ): Response {

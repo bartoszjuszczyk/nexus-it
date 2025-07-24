@@ -13,7 +13,7 @@ final class StatisticController extends AbstractController
 {
     private const LAST_DAYS = 30;
 
-    #[Route('/statistic', name: 'app_statistic_index')]
+    #[Route('/statistic', name: 'app_statistic_index', methods: ['GET'])]
     public function index(
         TicketRepository $ticketRepository,
         ChartBuilderInterface $chartBuilder,

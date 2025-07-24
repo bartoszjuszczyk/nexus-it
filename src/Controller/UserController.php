@@ -15,9 +15,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class UserController extends AbstractController
 {
-    #[Route('/user', name: 'app_user_list')]
+    #[Route('/user', name: 'app_user_list', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $users = $userRepository->findAll();
 
         return $this->render('user/index.html.twig', [
@@ -28,13 +29,14 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}/edit', name: 'app_user_edit')]
+    #[Route('/user/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(
         User $user,
         Request $request,
         AvatarUploader $avatarUploader,
         EntityManagerInterface $entityManager,
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -112,7 +114,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/new', name: 'app_user_new')]
+    #[Route('/user/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function create(
         Request $request,
         AvatarUploader $avatarUploader,
@@ -154,7 +156,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}/delete', name: 'app_user_delete')]
+    #[Route('/user/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(
         User $user,
         EntityManagerInterface $entityManager,
