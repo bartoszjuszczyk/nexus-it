@@ -121,7 +121,7 @@ final class TicketController extends AbstractController
         return $this->render('ticket/new.html.twig', [
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – New Ticket',
-            'boardTitle' => 'My tickets',
+            'boardTitle' => 'New ticket',
             'ticketForm' => $form,
         ]);
     }
