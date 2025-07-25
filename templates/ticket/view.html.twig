@@ -1,0 +1,212 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div data-controller="live-update" data-live-update-topic-value="{{ '/tickets/' ~ ticket.id }}"
+         data-live-update-current-user-id-value="{{ app.user.id }}">
+        <div class="ticket-view-header">
+            <div class="ticket-view-title">
+                <h2 class="mb-0">{{ ticket.title }}</h2>
+            </div>
+            <div class="ticket-view-status" data-live-update-target="status">
+                {% include 'ticket/_status_badge.html.twig' with {'status': ticket.status } %}
+            </div>
+        </div>
+
+        <div class="ticket-view-grid">
+            <div class="ticket-main-content">
+
+                <div class="card">
+                    <div class="card-header">
+                        Issued by:&nbsp;
+                        <strong>{{ ticket.author.fullname }}</strong>&nbsp;on&nbsp;{{ ticket.createdAt|date('d.m.Y H:i') }}
+                    </div>
+                    <div class="card-body">
+                        {{ ticket.description|nl2br }}
+                    </div>
+                </div>
+
+                <div class="ticket-conversation">
+                    <h3 class="conversation-title">Ticket history</h3>
+                    <div data-live-update-target="conversation">
+                        {% if ticketEvents is null %}
+                            <p class="text-muted">No history</p>
+                        {% endif %}
+                        {% for event in ticketEvents %}
+                            {% if event is instanceof('App\\Entity\\Ticket\\TicketEvent\\CommentEvent') %}
+                                {% include 'ticket/events/_comment.html.twig' %}
+                            {% elseif (event is instanceof('App\\Entity\\Ticket\\TicketEvent\\InternalCommentEvent') and is_granted('ROLE_SUPPORT')) %}
+                                {% include 'ticket/events/_internal_comment.html.twig' %}
+                            {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\SupportCommentEvent') %}
+                                {% include 'ticket/events/_support_comment.html.twig' %}
+                            {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\StatusChangeEvent') %}
+                                {% include 'ticket/events/_status_change.html.twig' %}
+                            {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AssignEvent') %}
+                                {% include 'ticket/events/_assign.html.twig' %}
+                            {% elseif event is instanceof('App\\Entity\\Ticket\\TicketEvent\\AttachmentEvent') %}
+                                {% include 'ticket/events/_attachment.html.twig' %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        {{ form_start(commentForm) }}
+
+                        {{ form_row(commentForm.comment) }}
+
+                        {% if commentForm.is_internal is defined %}
+                            {{ form_row(commentForm.is_internal) }}
+                        {% endif %}
+
+                        <div class="form-group" data-controller="attachments-preview">
+                            {{ form_label(commentForm.attachments) }}
+
+                            <div class="custom-file-upload">
+                                {{ form_widget(commentForm.attachments, { 'attr': {
+                                    'class': 'file-input',
+                                    'data-attachments-preview-target': 'input',
+                                    'data-action': 'change->attachments-preview#updateList'
+                                }}) }}
+
+                                <label for="{{ commentForm.attachments.vars.id }}" class="btn btn-secondary">
+                                    <i class="fa-solid fa-paperclip"></i> Add attachments...
+                                </label>
+                            </div>
+
+                            <div data-attachments-preview-target="container" class="file-list"></div>
+
+                            {{ form_errors(commentForm.attachments) }}
+                        </div>
+
+                        <div class="form-actions">
+                            {{ form_row(commentForm.save) }}
+                        </div>
+
+                        {{ form_end(commentForm) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticket-sidebar">
+                <div class="card">
+                    <div class="card-header"><h4>Ticket details</h4></div>
+                    <div class="card-body">
+                        <dl class="details-list">
+                            <dt>Number</dt>
+                            <dd>#{{ ticket.id }}</dd>
+
+                            <dt>Status</dt>
+                            <dd data-live-update-target="status">
+                                {% include 'ticket/_status_badge.html.twig' with {'status': ticket.status } %}
+                            </dd>
+                            {% if is_granted('ROLE_SUPPORT') %}
+                                <dt>Priority</dt>
+                                <dd>
+                                    {% if ticket.priority %}
+                                        <span class="badge"
+                                              style="background-color: {{ ticket.priority.primaryColor }}; color: {{ ticket.priority.secondaryColor }};">
+                                        {{ ticket.priority.label }}
+                                    </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">None</span>
+                                    {% endif %}
+                                </dd>
+                            {% endif %}
+
+                            <dt>Author</dt>
+                            <dd>{{ ticket.author.fullname }}</dd>
+
+                            <dt>Assigned to</dt>
+                            <dd>{{ ticket.assignedTo.fullName ?? 'None' }}</dd>
+
+                            {% if ticket.equipment %}
+                                <dt>Related equipment</dt>
+                                <dd>{{ ticket.equipment.name }} ({{ ticket.equipment.inventoryNumber }})</dd>
+                            {% endif %}
+
+                            <dt>Created at</dt>
+                            <dd>{{ ticket.createdAt|date('d.m.Y H:i') }}</dd>
+                            {% if ticket.lastRepliedAt %}
+                                <dt>Last replied at</dt>
+                                <dd>{{ ticket.lastRepliedAt|date('d.m.Y H:i') }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                </div>
+
+                {% if ticket.ticketAttachments|length > 0 %}
+                    <div class="card">
+                        <div class="card-header"><h4>Attachments</h4></div>
+                        <div class="card-body">
+                            <ul class="attachments-list" data-live-update-target="attachmentList">
+                                {% for attachment in ticket.ticketAttachments %}
+                                    <li>
+                                        <a href="{{ path('app_attachment_download', {id: attachment.id}) }}">
+                                            <i class="fa-solid fa-file-arrow-down"></i> {{ attachment.file }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Sekcja widoczna tylko dla pracowników IT #}
+                {% if is_granted('ROLE_SUPPORT') %}
+                    <div class="card">
+                        <div class="card-body">
+                            {% if statusChangeForm is not null %}
+                            <div class="action-form">
+                                {{ form_start(statusChangeForm) }}
+
+                                {{ form_row(statusChangeForm.newStatus) }}
+
+                                <div class="mt-3">
+                                    {{ form_row(statusChangeForm.save) }}
+                                </div>
+
+                                {{ form_end(statusChangeForm) }}
+                            </div>
+                            {% if assignForm is not null %}
+                                <hr>
+                                <div class="action-form">
+                                    {{ form_start(assignForm) }}
+
+                                    {{ form_row(assignForm.assignedWorker) }}
+
+                                    <div class="mt-3">
+                                        {{ form_row(assignForm.save) }}
+                                    </div>
+
+                                    {{ form_end(assignForm) }}
+                                </div>
+                            {% endif %}
+                            <hr>
+                            <div class="action-form">
+                                <label class="form-label">Change priority</label>
+                                <div class="priority-selector-links">
+                                    <a href="{{ path('app_ticket_set_priority_none', {id: ticket.id}) }}"
+                                       class="priority-pill-link {% if ticket.priority is null %}is-active{% endif %}"
+                                       style="--priority-color: #adb5bd;">
+                                        None
+                                    </a>
+                                    {% for priority in priorities %}
+                                        <a href="{{ path('app_ticket_set_priority', {id: ticket.id, ticketPriority: priority.id }) }}"
+                                           class="priority-pill-link {% if ticket.priority and ticket.priority.id == priority.id %}is-active{% endif %}"
+                                           style="--priority-color: {{ priority.primaryColor }};">
+                                            {{ priority.label }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

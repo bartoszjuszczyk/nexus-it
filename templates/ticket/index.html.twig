@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <main class="app-main-content">
+        <div class="container">
+            <div class="ticket-list">
+                {% include 'partials/_ticket-filters.html.twig' with { 'form': filterForm } %}
+                {% for ticket in tickets %}
+                    {% set card_class = '' %}
+                    {% if ticket.priority and is_granted('ROLE_SUPPORT') %}
+                        {% set card_class = 'ticket-card--' ~ ticket.priority.code %}
+                    {% endif %}
+                    <article class="ticket-card {{ card_class }}">
+                        <div class="ticket-header">
+                            <h3 class="ticket-title">
+                                <a href="{{ path('app_ticket_view', {id: ticket.id}) }}">{{ ticket.title }}</a>
+                            </h3>
+                            <span class="status-badge status-{{ ticket.status.code }}">{{ ticket.status.label }}</span>
+                        </div>
+                        <div class="ticket-body">
+                            <p>{{ ticket.description|wordSlice(50) }}</p>
+                        </div>
+                        <div class="ticket-footer">
+                            <span class="ticket-meta">ID: #{{ ticket.id }}</span>
+                            <span class="ticket-meta">Created at: {{ ticket.createdAt|date('d.m.Y H:i:s') }}</span>
+                            <a href="{{ path('app_ticket_view', {id: ticket.id}) }}" class="btn btn-secondary btn-sm">
+                                Show details
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}

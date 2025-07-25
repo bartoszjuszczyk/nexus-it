@@ -62,6 +62,31 @@
             "bin/phpunit"
         ]
     },
+    "scheb/2fa-bundle": {
+        "version": "7.11",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.0",
+            "ref": "1e6f68089146853a790b5da9946fc5974f6fcd49"
+        },
+        "files": [
+            "config/packages/scheb_2fa.yaml",
+            "config/routes/scheb_2fa.yaml"
+        ]
+    },
+    "stof/doctrine-extensions-bundle": {
+        "version": "1.14",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.2",
+            "ref": "e805aba9eff5372e2d149a9ff56566769e22819d"
+        },
+        "files": [
+            "config/packages/stof_doctrine_extensions.yaml"
+        ]
+    },
     "symfony/asset-mapper": {
         "version": "7.3",
         "recipe": {
@@ -166,6 +191,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/mercure-bundle": {
+        "version": "0.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "0.3",
+            "ref": "528285147494380298f8f991ee8c47abebaf79db"
+        },
+        "files": [
+            "config/packages/mercure.yaml"
+        ]
     },
     "symfony/messenger": {
         "version": "7.3",
@@ -282,6 +319,21 @@
             "templates/base.html.twig"
         ]
     },
+    "symfony/ux-autocomplete": {
+        "version": "2.27",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.6",
+            "ref": "07d9602b7231ba355f484305d6cea58310c01741"
+        },
+        "files": [
+            "config/routes/ux_autocomplete.yaml"
+        ]
+    },
+    "symfony/ux-chartjs": {
+        "version": "v2.27.0"
+    },
     "symfony/ux-turbo": {
         "version": "2.27",
         "recipe": {
@@ -327,6 +379,9 @@
         "files": [
             "config/packages/messenger.yaml"
         ]
+    },
+    "symfonycasts/sass-bundle": {
+        "version": "v0.8.2"
     },
     "twig/extra-bundle": {
         "version": "v3.21.0"

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div class="stats-grid">
+        <div class="stat-card card">
+            <div class="stat-card-icon">
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+            <div class="stat-card-body">
+                <div class="stat-card-value">{{ newTicketsCount }}</div>
+                <div class="stat-card-label">New tickets (last 30 days)</div>
+            </div>
+        </div>
+
+        <div class="stat-card card">
+            <div class="stat-card-icon">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="stat-card-body">
+                <div class="stat-card-value">{{ avgCloseTimeDays }}</div>
+                <div class="stat-card-label">Average ticket close time</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card chart-card">
+        <div class="card-header">
+            <h4>Tickets by status</h4>
+        </div>
+        <div class="card-body">
+            {{ render_chart(statusChart, {'height': '300px'}) }}
+        </div>
+    </div>
+{% endblock %}

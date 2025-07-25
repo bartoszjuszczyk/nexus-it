@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+
+{{ form_row(form.title) }}
+{{ form_row(form.content) }}
+{{ form_row(form.categories) }}
+
+<div class="form-actions mt-3">
+    {{ form_widget(form.save) }}
+</div>
+
+{{ form_end(form) }}

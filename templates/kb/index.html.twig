@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div class="card kb-filters">
+        <form method="get" action="{{ path('app_kb_index') }}">
+            <div class="filter-controls">
+                <div class="form-group category-group">
+                    <label for="kb-category">Filter by category</label>
+                    <select id="kb-category" name="category" class="form-control">
+                        <option value="">All categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {{ category.id == app.request.query.get('category') ? 'selected' : '' }}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ path('app_kb_index') }}" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="article-list">
+        {% for article in articles %}
+            <div class="card article-list-item">
+                <div class="card-body">
+                    <h4 class="article-title">
+                        <a href="{{ path('app_kb_article_show', {'id': article.id}) }}">{{ article.title }}</a>
+                    </h4>
+                    <p class="article-excerpt">
+                        {{ article.content|striptags|slice(0, 50) }}...
+                    </p>
+                    <div class="article-categories">
+                        {% for category in article.categories %}
+                            <span class="badge">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card text-center text-muted p-5">
+                <p class="mb-0">No articles found.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
