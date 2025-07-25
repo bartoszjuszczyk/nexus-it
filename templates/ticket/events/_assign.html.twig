@@ -1,0 +1,8 @@
+<div class="conversation-item meta-event">
+    <div class="conversation-icon"><i class="fa-solid fa-user-plus"></i></div>
+    <div class="conversation-body">
+        <strong>{{ event.author.fullname }}</strong> assigned ticket to
+        <strong>{{ event.assignedWorker.fullname }}</strong>
+        <span class="text-muted"> at {{ event.createdAt|date('d.m.Y H:i') }}</span>
+    </div>
+</div>

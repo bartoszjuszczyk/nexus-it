@@ -1,0 +1,14 @@
+<div class="conversation-item comment-item coment-item--support" data-author-id="{{ event.author.id }}">
+    <div class="conversation-avatar">
+        <img src="{{ event.author.avatar ? asset('uploads/user/avatar/' ~ event.author.avatar) : asset('images/default-avatar.png') }}" alt="Avatar">
+    </div>
+    <div class="conversation-body card">
+        <div class="card-header">
+            <strong>{{ event.author.fullname }}</strong>
+            <span class="text-muted ms-auto">{{ event.createdAt|date('d.m.Y H:i') }}</span>
+        </div>
+        <div class="card-body">
+            {{ event.comment|nl2br }}
+        </div>
+    </div>
+</div>

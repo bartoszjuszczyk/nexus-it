@@ -1,0 +1,11 @@
+{{ form_start(form) }}
+
+{{ form_row(form.name) }}
+{{ form_row(form.inventoryNumber) }}
+{{ form_row(form.assignedTo) }}
+
+<div class="form-actions mt-3">
+    {{ form_widget(form.save) }}
+</div>
+
+{{ form_end(form) }}

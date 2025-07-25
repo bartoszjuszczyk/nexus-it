@@ -1,0 +1,61 @@
+// Główny kontener siatki dla strony profilu
+.profile-grid {
+    display: flex;
+    gap: $spacing-unit * 3;
+
+    // Na mniejszych ekranach kolumny ustawiają się jedna pod drugą
+    @media (max-width: $breakpoint-lg) {
+        flex-direction: column;
+    }
+}
+
+// Kolumna z avatarem
+.profile-avatar-column {
+    flex: 0 0 220px;
+    text-align: center;
+}
+
+// Kolumna z polami formularza
+.profile-form-column {
+    flex: 1 1 auto;
+}
+
+// Tytuł wewnątrz kolumny
+.column-title {
+    font-size: 1.25rem;
+    font-weight: $font-weight-normal;
+    color: $text-color;
+    margin-bottom: $spacing-unit * 1.5;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: calc($spacing-unit / 2);
+}
+
+// Komponent do przesyłania avatara
+.avatar-uploader {
+    .current-avatar {
+        margin-bottom: $spacing-unit;
+
+        img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid $surface-color;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    label.btn {
+        display: inline-block;
+        margin-bottom: calc($spacing-unit / 2);
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: $text-muted;
+    }
+}

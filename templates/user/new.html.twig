@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        {{ form_start(form) }}
+
+        <div class="profile-grid">
+            <div class="profile-avatar-column" data-controller="avatar-preview">
+                <div class="form-group avatar-uploader-wrapper">
+                    <h3 class="column-title">Profile image</h3>
+                    <div class="avatar-uploader">
+                        <div class="current-avatar">
+                            <img id="avatar-preview"
+                                 data-avatar-preview-target="preview"
+                                 src="{{ form.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}"
+                                 alt="Current avatar">
+                        </div>
+
+                        {{ form_widget(form.avatar, { 'attr': {
+                            'data-avatar-preview-target': 'input',
+                            'data-action': 'change->avatar-preview#updatePreview'
+                        }}) }}
+
+                        <label for="{{ form.avatar.vars.id }}" class="btn btn-secondary">
+                            {{ form.avatar.vars.label }}
+                        </label>
+
+                        <p class="form-text"><small>{{ form_help(form.avatar) }}</small></p>
+
+                        {{ form_errors(form.avatar) }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-form-column">
+                <h3 class="column-title">Personal data</h3>
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.email) }}
+
+                <h3 class="column-title">Regional settings</h3>
+                {{ form_row(form.locale) }}
+                {{ form_row(form.timezone) }}
+            </div>
+        </div>
+
+        <div class="form-actions">
+            {{ form_row(form.save) }}
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+<header class="app-header">
+    <div class="header-left">
+        <button class="mobile-nav-toggle" aria-label="Toggle menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="page-title">{{ boardTitle }}</h1>
+    </div>
+    <a href="{{ path('app_user_edit_mine') }}">
+        <div class="header-right">
+            <span class="user-info">Hello, {{ app.user.fullname }}</span>
+            <div class="header-avatar">
+                <img src="{{ app.user.avatar ? asset('uploads/user/avatar/' ~ app.user.avatar) : asset('images/default-avatar.png') }}" alt="User avatar">
+            </div>
+        </div>
+    </a>
+</header>

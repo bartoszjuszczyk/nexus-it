@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body article-view">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_kb_index') }}">Knowledge Base</a></li>
+
+                    {% if article.categories is not empty %}
+                        {% set firstCategory = article.categories|first %}
+                        <li class="breadcrumb-item">
+                            <a href="{{ path('app_kb_index', {'category': firstCategory.id}) }}">{{ firstCategory.name }}</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="breadcrumb-item active" aria-current="page">{{ article.title|slice(0, 50) }}{{ article.title|length > 50 ? '...' : '' }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="article-title">{{ article.title }}</h1>
+
+            <div class="article-meta">
+                <span>Last updated at: {{ article.updatedAt ? article.updatedAt|date('d.m.Y') : article.createdAt|date('d.m.Y') }}</span>
+                <div class="article-categories mt-2">
+                    {% for category in article.categories %}
+                        <a href="{{ path('app_kb_index', {'category': category.id}) }}" class="badge">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="article-content">
+                {{ article.content|raw }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

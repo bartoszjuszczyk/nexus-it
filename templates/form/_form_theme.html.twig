@@ -1,0 +1,75 @@
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_row -%}
+    <div class="form-group">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row -%}
+
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+        {%- if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif -%}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' form-label')|trim}) %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        {{- label|trans -}}
+        {%- if required -%}
+            <span class="required" title="To pole jest wymagane">*</span>
+        {%- endif -%}
+        </label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <div class="form-error">
+            <ul class="form-error-list">
+                {%- for error in errors -%}
+                    <li>
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        {{ error.message }}
+                    </li>
+                {%- endfor -%}
+            </ul>
+        </div>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block form_widget_simple -%}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}
+
+{%- block choice_widget_collapsed -%}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
+{%- block button_widget -%}
+    {%- set attr = attr|merge({'class': (attr.class|default('') ~ ' btn')|trim}) -%}
+    {%- if label is same as(false) -%}
+        {%- set attr = attr|merge({'class': (attr.class|default('') ~ ' btn-icon')|trim}) -%}
+    {%- endif -%}
+    {%- if attr.type|default('submit') == 'submit' -%}
+        {%- set attr = attr|merge({'class': (attr.class|default('') ~ ' btn-primary')|trim}) -%}
+    {% else %}
+        {%- set attr = attr|merge({'class': (attr.class|default('') ~ ' btn-secondary')|trim}) -%}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock button_widget -%}
+
+{%- block checkbox_row -%}
+    <div class="form-check">
+        {{- form_widget(form) -}}
+        {{- form_label(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
