@@ -93,22 +93,20 @@
 
 .form-check {
     display: flex;
-    align-items: center; // Wyrównanie w pionie
-    gap: 0.5rem; // Odstęp między checkboxem a tekstem
-    margin-bottom: $spacing-unit; // Zachowujemy dolny margines jak w .form-group
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: $spacing-unit;
 }
 
-// Usuwamy domyślne style z etykiety, gdy jest w .form-check
 .form-check .form-label {
     margin-bottom: 0;
     font-weight: $font-weight-bold;
 }
 
-// Zwiększamy rozmiar samego checkboxa
 .form-check input[type="checkbox"] {
-    width: 1.25em; // Zwiększamy szerokość
-    height: 1.25em; // i wysokość
-    flex-shrink: 0; // Zapobiega kurczeniu się w kontenerze flex
+    width: 1.25em;
+    height: 1.25em;
+    flex-shrink: 0;
 }
 
 .btn.btn-danger {
@@ -119,4 +117,14 @@
         background-color: darken(#dc3545, 10%);
         border-color: darken(#dc3545, 10%);
     }
+}
+
+.form-switch-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-unit;
+    padding: $spacing-unit 0;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
 }

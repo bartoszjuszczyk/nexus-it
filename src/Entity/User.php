@@ -11,12 +11,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
 {
     use TimestampableEntity;
     #[ORM\Id]
@@ -89,6 +92,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Equipment::class, mappedBy: 'assignedTo')]
     private Collection $equipment;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $totpAuthenticationSecret;
 
     public function __construct()
     {
@@ -422,6 +428,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $equipment->setAssignedTo(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return null !== $this->totpAuthenticationSecret;
+    }
+
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        return new TotpConfiguration($this->totpAuthenticationSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6);
+    }
+
+    public function getTotpAuthenticationSecret(): ?string
+    {
+        return $this->totpAuthenticationSecret;
+    }
+
+    public function setTotpAuthenticationSecret(?string $totpSecret): static
+    {
+        $this->totpAuthenticationSecret = $totpSecret;
 
         return $this;
     }

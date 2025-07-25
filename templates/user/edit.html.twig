@@ -52,4 +52,67 @@
 
         {{ form_end(form) }}
     </div>
+
+    <div class="card" data-controller="2fa-toggle"
+         data-2fa-toggle-generate-url-value="{{ url('app_2fa_qr_code') }}">
+        <div class="card-body form-switch-group">
+            <div class="form-label">
+                Two-Factor Authentication (2FA)
+                <small class="d-block text-muted">
+                    Status:
+                    <strong class="{{ user.isTotpAuthenticationEnabled ? 'text-success' : 'text-danger' }}">
+                        {{ user.isTotpAuthenticationEnabled ? 'Enabled' : 'Disabled' }}
+                    </strong>
+                </small>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox"
+                       data-2fa-toggle-target="switch"
+                       data-action="change->2fa-toggle#toggle"
+                    {{ user.isTotpAuthenticationEnabled ? 'checked' : '' }}>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="modal-backdrop" data-2fa-toggle-target="enableModalBackdrop" data-action="click->2fa-toggle#close"></div>
+        <div class="modal" data-2fa-toggle-target="enableModal">
+            <div class="modal-header">
+                <h4 class="modal-title">Configure 2FA</h4>
+                <button class="modal-close" data-action="click->2fa-toggle#close">&times;</button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Scan the QR code with the authentication app, then enter the generated code to confirm.</p>
+                <img src="" data-2fa-toggle-target="qrCodeImage" alt="Kod QR" class="mb-3">
+                <p class="text-muted mt-3">Lub wpisz poniższy kod ręcznie:</p>
+                <p class="totp-secret-code" data-2fa-toggle-target="authCodeSpan"></p>
+
+                <form action="{{ path('app_2fa_confirm') }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token('verify_2fa' ~ user.id) }}">
+                    <div class="form-group">
+                        <input type="text" name="otp_code" class="form-control" placeholder="Enter 6-digits code" required maxlength="6">
+                    </div>
+                    <input type="hidden" name="auth_code" value="" data-2fa-toggle-target="authCodeInput"/>
+                    <button type="submit" class="btn btn-primary w-100">Verify & Enable</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal-backdrop" data-2fa-toggle-target="disableModalBackdrop" data-action="click->2fa-toggle#close"></div>
+        <div class="modal" data-2fa-toggle-target="disableModal">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmation</h4>
+                <button class="modal-close" data-action="click->2fa-toggle#close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to disable two-factor authentication?</p>
+
+                <form action="{{ path('app_2fa_disable') }}" method="post" class="text-end">
+                    <input type="hidden" name="_token" value="{{ csrf_token('disable_2fa' ~ user.id) }}">
+                    <button type="button" class="btn btn-secondary" data-action="click->2fa-toggle#close">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Yes, disable 2FA</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

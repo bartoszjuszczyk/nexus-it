@@ -69,6 +69,7 @@ final class UserController extends AbstractController
             'appTitle' => $this->getParameter('app_title'),
             'pageTitle' => $this->getParameter('app_title').' – User Edit',
             'boardTitle' => 'User edit: #'.$user->getId(),
+            'user' => $user,
         ]);
     }
 
@@ -111,6 +112,7 @@ final class UserController extends AbstractController
             'pageTitle' => $this->getParameter('app_title').' – User Edit',
             'boardTitle' => 'User edit',
             'form' => $form,
+            'user' => $user,
         ]);
     }
 

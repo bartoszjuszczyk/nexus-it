@@ -1,0 +1,31 @@
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: $background-light;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-code-input {
+    font-size: 2rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+}
+
+.alert {
+    padding: $spacing-unit;
+    margin-bottom: $spacing-unit;
+    border: 1px solid transparent;
+    border-radius: $border-radius;
+
+    &.alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+}
