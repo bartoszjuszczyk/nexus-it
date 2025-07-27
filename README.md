@@ -1,3 +1,6 @@
+## GitAds Sponsored
+[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=bartoszjuszczyk/nexus-it@github)](https://gitads.dev/v1/ad-track?source=bartoszjuszczyk/nexus-it@github)
+
 # Nexus IT Helpdesk System
 
 [![Symfony Version](https://img.shields.io/badge/Symfony-7.x-blueviolet)](https://symfony.com)
@@ -61,7 +64,6 @@ management and reporting.
 - **Development Environment:** Warden
 
 ---
-<!-- GitAds-Verify: Y31ZNJVKXGDP9T9YMEAJNPYRVXO9AH38 -->
 
 ## 📄 License
 
